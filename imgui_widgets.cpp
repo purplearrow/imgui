@@ -1251,22 +1251,42 @@ bool ImGui::RadioButton(const char* label, bool active)
 
     RenderNavHighlight(total_bb, id);
     const int num_segment = window->DrawList->_CalcCircleAutoSegmentCount(radius);
+#ifdef USE_SPECTRUM_THEME
     if (active)
     {
-        window->DrawList->AddCircleFilled(center, radius * 0.8f, ((held && hovered) ? Spectrum::BLUE700 : hovered ? Spectrum::BLUE600 : Spectrum::BLUE500), num_segment);
-        window->DrawList->AddCircleFilled(center, radius * 0.25f, Spectrum::GRAY75, num_segment);
+        window->DrawList->AddCircleFilled(center, radius * 0.8f, hovered ? GetColorU32(ImGuiCol_RadioButtonActiveHovered) : GetColorU32(ImGuiCol_RadioButtonActive), num_segment);
+        //window->DrawList->AddCircleFilled(center, radius * 0.25f, GetColorU32(ImGuiCol_RadioButtonCenter), num_segment);  //solid circle looks good, so I mark this line
     }
     else 
     {
-        window->DrawList->AddCircleFilled(center, radius * 0.8f, ((held && hovered) ? Spectrum::GRAY800 : hovered ? Spectrum::GRAY700: Spectrum::GRAY600), num_segment);
-        window->DrawList->AddCircleFilled(center, radius * 0.6f, Spectrum::GRAY75, num_segment);
+        window->DrawList->AddCircleFilled(center, radius * 0.8f, hovered ? GetColorU32(ImGuiCol_RadioButtonBorderHovered) : GetColorU32(ImGuiCol_RadioButtonBorder), num_segment);
+        window->DrawList->AddCircleFilled(center, radius * 0.6f, GetColorU32(ImGuiCol_RadioButtonCenter), num_segment);
     }
+#else
+    window->DrawList->AddCircleFilled(center, radius, GetColorU32((held && hovered) ? ImGuiCol_FrameBgActive : hovered ? ImGuiCol_FrameBgHovered : ImGuiCol_FrameBg), num_segment);
+    if (active)
+    {
+        const float pad = ImMax(1.0f, IM_FLOOR(square_sz / 6.0f));
+        window->DrawList->AddCircleFilled(center, radius - pad, GetColorU32(ImGuiCol_CheckMark));
+    }
+
+    if (style.FrameBorderSize > 0.0f)
+    {
+        window->DrawList->AddCircle(center + ImVec2(1, 1), radius, GetColorU32(ImGuiCol_BorderShadow), num_segment, style.FrameBorderSize);
+        window->DrawList->AddCircle(center, radius, GetColorU32(ImGuiCol_Border), num_segment, style.FrameBorderSize);
+    }
+#endif
 
     ImVec2 label_pos = ImVec2(check_bb.Max.x + style.ItemInnerSpacing.x, check_bb.Min.y + style.FramePadding.y);
     if (g.LogEnabled)
         LogRenderedText(&label_pos, active ? "(x)" : "( )");
-    if (label_size.x > 0.0f)
-        RenderText(label_pos, label, nullptr, true, hovered ? Spectrum::GRAY900 : Spectrum::GRAY800);
+    if (label_size.x > 0.0f) {
+#ifdef USE_SPECTRUM_THEME
+        RenderText(label_pos, label, nullptr, true, hovered ? GetColorU32(ImGuiCol_TextHovered) : GetColorU32(ImGuiCol_Text));
+#else
+        RenderText(label_pos, label);
+#endif
+    }
 
     IMGUI_TEST_ENGINE_ITEM_INFO(id, label, g.LastItemData.StatusFlags);
     return pressed;

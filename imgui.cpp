@@ -3257,6 +3257,9 @@ const char* ImGui::GetStyleColorName(ImGuiCol idx)
     switch (idx)
     {
     case ImGuiCol_Text: return "Text";
+#ifdef USE_SPECTRUM_THEME
+    case ImGuiCol_TextHovered: return "TextHovered";
+#endif
     case ImGuiCol_TextDisabled: return "TextDisabled";
     case ImGuiCol_WindowBg: return "WindowBg";
     case ImGuiCol_ChildBg: return "ChildBg";
@@ -3266,6 +3269,13 @@ const char* ImGui::GetStyleColorName(ImGuiCol idx)
     case ImGuiCol_FrameBg: return "FrameBg";
     case ImGuiCol_FrameBgHovered: return "FrameBgHovered";
     case ImGuiCol_FrameBgActive: return "FrameBgActive";
+#ifdef USE_SPECTRUM_THEME
+    case ImGuiCol_RadioButtonCenter: return "RadioBtnCenter";
+    case ImGuiCol_RadioButtonBorder: return "RadioBtnBorder";
+    case ImGuiCol_RadioButtonBorderHovered: return "RadioBtnBorderHovered";
+    case ImGuiCol_RadioButtonActive: return "RadioBtnActive";
+    case ImGuiCol_RadioButtonActiveHovered: return "RadioButtonActiveHovered";
+#endif
     case ImGuiCol_TitleBg: return "TitleBg";
     case ImGuiCol_TitleBgActive: return "TitleBgActive";
     case ImGuiCol_TitleBgCollapsed: return "TitleBgCollapsed";
@@ -3357,7 +3367,11 @@ void ImGui::RenderText(ImVec2 pos, const char* text, const char* text_end, bool 
 
     if (text != text_display_end)
     {
+#ifdef USE_SPECTRUM_THEME
         window->DrawList->AddText(g.Font, g.FontSize, pos, (color == 0 ? GetColorU32(ImGuiCol_Text) : color), text, text_display_end);
+#else
+        window->DrawList->AddText(g.Font, g.FontSize, pos, GetColorU32(ImGuiCol_Text), text, text_display_end);
+#endif
         if (g.LogEnabled)
             LogRenderedText(&pos, text, text_display_end);
     }
@@ -3373,7 +3387,11 @@ void ImGui::RenderTextWrapped(ImVec2 pos, const char* text, const char* text_end
 
     if (text != text_end)
     {
+#ifdef USE_SPECTRUM_THEME
         window->DrawList->AddText(g.Font, g.FontSize, pos, (color == 0 ? GetColorU32(ImGuiCol_Text) : color), text, text_end, wrap_width);
+#else
+        window->DrawList->AddText(g.Font, g.FontSize, pos, GetColorU32(ImGuiCol_Text), text, text_end, wrap_width);
+#endif
         if (g.LogEnabled)
             LogRenderedText(&pos, text, text_end);
     }
@@ -3404,11 +3422,19 @@ void ImGui::RenderTextClippedEx(ImDrawList* draw_list, const ImVec2& pos_min, co
     if (need_clipping)
     {
         ImVec4 fine_clip_rect(clip_min->x, clip_min->y, clip_max->x, clip_max->y);
+#ifdef USE_SPECTRUM_THEME
         draw_list->AddText(NULL, 0.0f, pos, (color != 0 ? color : GetColorU32(ImGuiCol_Text)), text, text_display_end, 0.0f, &fine_clip_rect);
+#else
+        draw_list->AddText(NULL, 0.0f, pos, GetColorU32(ImGuiCol_Text), text, text_display_end, 0.0f, &fine_clip_rect);
+#endif
     }
     else
     {
+#ifdef USE_SPECTRUM_THEME
         draw_list->AddText(NULL, 0.0f, pos, (color != 0 ? color : GetColorU32(ImGuiCol_Text)), text, text_display_end, 0.0f, NULL);
+#else
+        draw_list->AddText(NULL, 0.0f, pos, GetColorU32(ImGuiCol_Text), text, text_display_end, 0.0f, NULL);
+#endif
     }
 }
 
@@ -3422,7 +3448,11 @@ void ImGui::RenderTextClipped(const ImVec2& pos_min, const ImVec2& pos_max, cons
 
     ImGuiContext& g = *GImGui;
     ImGuiWindow* window = g.CurrentWindow;
+#ifdef USE_SPECTRUM_THEME
     RenderTextClippedEx(window->DrawList, pos_min, pos_max, text, text_display_end, text_size_if_known, align, clip_rect, color);
+#else
+    RenderTextClippedEx(window->DrawList, pos_min, pos_max, text, text_display_end, text_size_if_known, align, clip_rect);
+#endif
     if (g.LogEnabled)
         LogRenderedText(&pos_min, text, text_display_end);
 }

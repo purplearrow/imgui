@@ -22,8 +22,9 @@ namespace ImGui {
 
             ImVec4* colors = style->Colors;
             colors[ImGuiCol_Text] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY800); // text on hovered controls is gray900
-            colors[ImGuiCol_TextDisabled] = ColorConvertU32ToFloat4(Spectrum::GRAY500);
-            colors[ImGuiCol_WindowBg] = ColorConvertU32ToFloat4(Spectrum::GRAY100);
+#ifdef USE_SPECTRUM_THEME
+            colors[ImGuiCol_TextHovered] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY900); // text on hovered controls is gray900
+#endif
             colors[ImGuiCol_TextDisabled] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY500);
             colors[ImGuiCol_WindowBg] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY100);
             colors[ImGuiCol_ChildBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
@@ -33,13 +34,13 @@ namespace ImGui {
             colors[ImGuiCol_FrameBg] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY75); // this isnt right, spectrum does not do this, but it's a good fallback
             colors[ImGuiCol_FrameBgHovered] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY50);
             colors[ImGuiCol_FrameBgActive] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY200);
-            colors[ImGuiCol_TitleBg] = ColorConvertU32ToFloat4(Spectrum::GRAY300); // those titlebar values are totally made up, spectrum does not have this.
-            colors[ImGuiCol_TitleBgActive] = ColorConvertU32ToFloat4(Spectrum::GRAY200);
-            colors[ImGuiCol_TitleBgCollapsed] = ColorConvertU32ToFloat4(Spectrum::GRAY400);
-            colors[ImGuiCol_MenuBarBg] = ColorConvertU32ToFloat4(Spectrum::GRAY100);
-            colors[ImGuiCol_ScrollbarBg] = ColorConvertU32ToFloat4(Spectrum::GRAY100); // same as regular background
-            colors[ImGuiCol_ScrollbarGrab] = ColorConvertU32ToFloat4(Spectrum::GRAY400);
-            colors[ImGuiCol_ScrollbarGrabHovered] = ColorConvertU32ToFloat4(Spectrum::GRAY600);
+#ifdef USE_SPECTRUM_THEME
+            colors[ImGuiCol_RadioButtonCenter] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY75);
+            colors[ImGuiCol_RadioButtonBorder] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY500);
+            colors[ImGuiCol_RadioButtonBorderHovered] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY700);
+            colors[ImGuiCol_RadioButtonActive] = ColorConvertU32ToFloat4(Spectrum::Light::BLUE500);
+            colors[ImGuiCol_RadioButtonActiveHovered] = ColorConvertU32ToFloat4(Spectrum::Light::BLUE700);
+#endif
             colors[ImGuiCol_TitleBg] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY300); // those titlebar values are totally made up, spectrum does not have this.
             colors[ImGuiCol_TitleBgActive] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY200);
             colors[ImGuiCol_TitleBgCollapsed] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY400);
@@ -98,6 +99,9 @@ namespace ImGui {
 
             ImVec4* colors = style->Colors;
             colors[ImGuiCol_Text] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY800); // text on hovered controls is gray900
+#ifdef USE_SPECTRUM_THEME
+            colors[ImGuiCol_TextHovered] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY900); // text on hovered controls is gray900
+#endif
             colors[ImGuiCol_TextDisabled] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY500);
             colors[ImGuiCol_WindowBg] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY100);
             colors[ImGuiCol_ChildBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
@@ -107,6 +111,13 @@ namespace ImGui {
             colors[ImGuiCol_FrameBg] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY75); // this isnt right, spectrum does not do this, but it's a good fallback
             colors[ImGuiCol_FrameBgHovered] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY50);
             colors[ImGuiCol_FrameBgActive] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY200);
+#ifdef USE_SPECTRUM_THEME
+            colors[ImGuiCol_RadioButtonCenter] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY75);
+            colors[ImGuiCol_RadioButtonBorder] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY500);
+            colors[ImGuiCol_RadioButtonBorderHovered] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY700);
+            colors[ImGuiCol_RadioButtonActive] = ColorConvertU32ToFloat4(Spectrum::Dark::BLUE500);
+            colors[ImGuiCol_RadioButtonActiveHovered] = ColorConvertU32ToFloat4(Spectrum::Dark::BLUE700);
+#endif
             colors[ImGuiCol_TitleBg] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY300); // those titlebar values are totally made up, spectrum does not have this.
             colors[ImGuiCol_TitleBgActive] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY200);
             colors[ImGuiCol_TitleBgCollapsed] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY400);

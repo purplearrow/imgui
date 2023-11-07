@@ -1633,6 +1633,9 @@ enum ImGuiBackendFlags_
 enum ImGuiCol_
 {
     ImGuiCol_Text,
+#ifdef USE_SPECTRUM_THEME
+    ImGuiCol_TextHovered,
+#endif
     ImGuiCol_TextDisabled,
     ImGuiCol_WindowBg,              // Background of normal windows
     ImGuiCol_ChildBg,               // Background of child windows
@@ -1642,6 +1645,13 @@ enum ImGuiCol_
     ImGuiCol_FrameBg,               // Background of checkbox, radio button, plot, slider, text input
     ImGuiCol_FrameBgHovered,
     ImGuiCol_FrameBgActive,
+#ifdef USE_SPECTRUM_THEME
+    ImGuiCol_RadioButtonCenter,         //center part of radio button (not active)
+    ImGuiCol_RadioButtonBorder,         //border of radio button (not active)
+    ImGuiCol_RadioButtonBorderHovered,  //border of radio button (not active, but hovered)
+    ImGuiCol_RadioButtonActive,         //solid circle of radio button when active
+    ImGuiCol_RadioButtonActiveHovered,  //solid circle of radio button when active and hovered
+#endif
     ImGuiCol_TitleBg,
     ImGuiCol_TitleBgActive,
     ImGuiCol_TitleBgCollapsed,
