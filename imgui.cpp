@@ -3275,6 +3275,11 @@ const char* ImGui::GetStyleColorName(ImGuiCol idx)
     case ImGuiCol_RadioButtonBorderHovered: return "RadioBtnBorderHovered";
     case ImGuiCol_RadioButtonActive: return "RadioBtnActive";
     case ImGuiCol_RadioButtonActiveHovered: return "RadioButtonActiveHovered";
+    case ImGuiCol_CheckBoxMark: return "CheckBoxMark";
+    case ImGuiCol_CheckBoxBg: return "CheckBoxBg";
+    case ImGuiCol_CheckBoxBgHovered: return "CheckBoxBgHovered";
+    case ImGuiCol_CheckBoxBorder: return "CheckBoxBorder";
+    case ImGuiCol_CheckBoxBorderHovered: return "CheckBoxBorderHovered";
 #endif
     case ImGuiCol_TitleBg: return "TitleBg";
     case ImGuiCol_TitleBgActive: return "TitleBgActive";

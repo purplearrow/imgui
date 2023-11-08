@@ -1136,6 +1136,7 @@ bool ImGui::Checkbox(const char* label, bool* v)
     // ImGui-Spectrum changes start here
     const ImVec2 offset(style.FramePadding.y, style.FramePadding.y);
     const ImRect check2_bb(check_bb.Min + offset, check_bb.Max - offset);
+#ifdef USE_SPECTRUM_THEME
     const float check_sz = ImMin(check2_bb.GetWidth(), check2_bb.GetHeight());
     const float pad = ImMax(1.0f, (float)(int)(check_sz / 3.0f));
 
@@ -1145,29 +1146,53 @@ bool ImGui::Checkbox(const char* label, bool* v)
         // Undocumented tristate/mixed/indeterminate checkbox (#2644)
         // This may seem awkwardly designed because the aim is to make ImGuiItemFlags_MixedValue supported by all widgets (not just checkbox)
         // (same frame as the checked state)
-        RenderFrame(check2_bb.Min, check2_bb.Max, (held && hovered) ? Spectrum::BLUE700 : hovered ? Spectrum::BLUE600 : Spectrum::BLUE500, false, Spectrum::CHECKBOX_ROUNDING);
+        ImU32 frame_col = GetColorU32(hovered ? ImGuiCol_CheckBoxBgHovered : ImGuiCol_CheckBoxBg);
+        RenderFrame(check2_bb.Min, check2_bb.Max, frame_col, false, Spectrum::CHECKBOX_ROUNDING);
         const ImVec2 line_size = ImVec2(check2_bb.GetWidth() / 2 - style.ItemInnerSpacing.x, 1.5f);
-        RenderFrame(check2_bb.GetCenter() - line_size, check2_bb.GetCenter() + line_size, Spectrum::GRAY50, false, 2.0f);
-    } 
+        RenderFrame(check2_bb.GetCenter() - line_size, check2_bb.GetCenter() + line_size, GetColorU32(ImGuiCol_CheckBoxMark), false, 2.0f);
+    }
     else if (*v)
     {
-        ImU32 frame_col = (held && hovered) ? Spectrum::BLUE700 : (hovered ? Spectrum::BLUE600 : Spectrum::BLUE500);
-        RenderFrame(check2_bb.Min, check2_bb.Max, frame_col, false, Spectrum::CHECKBOX_ROUNDING); 
-        RenderCheckMark(window->DrawList, check_bb.Min + ImVec2(pad,pad), Spectrum::GRAY50, square_sz - pad*2.0f);
-    } else {
-        ImU32 border_col = (held && hovered) ? Spectrum::GRAY800 : (hovered ? Spectrum::GRAY700 : Spectrum::GRAY600);
+        ImU32 frame_col = GetColorU32(hovered ? ImGuiCol_CheckBoxBgHovered : ImGuiCol_CheckBoxBg);
+        RenderFrame(check2_bb.Min, check2_bb.Max, frame_col, false, Spectrum::CHECKBOX_ROUNDING);
+        RenderCheckMark(window->DrawList, check_bb.Min + ImVec2(pad, pad), GetColorU32(ImGuiCol_CheckBoxMark), square_sz - pad * 2.0f);
+    }
+    else {
+        ImU32 border_col = GetColorU32(hovered ? ImGuiCol_CheckBoxBorderHovered : ImGuiCol_CheckBoxBorder);
         PushStyleVar(ImGuiStyleVar_FrameBorderSize, Spectrum::CHECKBOX_BORDER_SIZE);
         PushStyleColor(ImGuiCol_Border, border_col);
         RenderFrameBorder(check2_bb.Min, check2_bb.Max, Spectrum::CHECKBOX_ROUNDING);
         PopStyleVar();
         PopStyleColor();
     }
-
+#else
+    RenderFrame(check_bb.Min, check_bb.Max, GetColorU32((held && hovered) ? ImGuiCol_FrameBgActive : hovered ? ImGuiCol_FrameBgHovered : ImGuiCol_FrameBg), true, style.FrameRounding);
+    ImU32 check_col = GetColorU32(ImGuiCol_CheckMark);
+    bool mixed_value = (g.LastItemData.InFlags & ImGuiItemFlags_MixedValue) != 0;
+    if (mixed_value)
+    {
+        // Undocumented tristate/mixed/indeterminate checkbox (#2644)
+        // This may seem awkwardly designed because the aim is to make ImGuiItemFlags_MixedValue supported by all widgets (not just checkbox)
+        ImVec2 pad(ImMax(1.0f, IM_FLOOR(square_sz / 3.6f)), ImMax(1.0f, IM_FLOOR(square_sz / 3.6f)));
+        window->DrawList->AddRectFilled(check_bb.Min + pad, check_bb.Max - pad, check_col, style.FrameRounding);
+    }
+    else if (*v)
+    {
+        const float pad = ImMax(1.0f, IM_FLOOR(square_sz / 6.0f));
+        RenderCheckMark(window->DrawList, check_bb.Min + ImVec2(pad, pad), check_col, square_sz - pad * 2.0f);
+    }
+#endif
     ImVec2 label_pos = ImVec2(check_bb.Max.x + style.ItemInnerSpacing.x, check_bb.Min.y + style.FramePadding.y);
     if (g.LogEnabled)
         LogRenderedText(&label_pos, mixed_value ? "[~]" : *v ? "[x]" : "[ ]");
-    if (label_size.x > 0.0f)
-        RenderText(label_pos, label, nullptr, true, hovered ? Spectrum::GRAY900 : Spectrum::GRAY800);
+    if (label_size.x > 0.0f) {
+#ifdef USE_SPECTRUM_THEME
+        RenderText(label_pos, label, nullptr, true, hovered ? GetColorU32(ImGuiCol_TextHovered) : GetColorU32(ImGuiCol_Text));
+#else
+        RenderText(label_pos, label);
+#endif
+    }
+
 
     IMGUI_TEST_ENGINE_ITEM_INFO(id, label, g.LastItemData.StatusFlags | ImGuiItemStatusFlags_Checkable | (*v ? ImGuiItemStatusFlags_Checked : 0));
     return pressed;

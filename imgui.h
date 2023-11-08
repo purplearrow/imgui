@@ -31,6 +31,7 @@
 #define IMGUI_HAS_VIEWPORT          // Viewport WIP branch
 #define IMGUI_HAS_DOCK              // Docking WIP branch
 
+#define USE_SPECTRUM_THEME
 /*
 
 Index of this file:
@@ -1651,6 +1652,11 @@ enum ImGuiCol_
     ImGuiCol_RadioButtonBorderHovered,  //border of radio button (not active, but hovered)
     ImGuiCol_RadioButtonActive,         //solid circle of radio button when active
     ImGuiCol_RadioButtonActiveHovered,  //solid circle of radio button when active and hovered
+    ImGuiCol_CheckBoxMark,              // V in the check box
+    ImGuiCol_CheckBoxBg,                //background of check box
+    ImGuiCol_CheckBoxBgHovered,         //background of check box when hovered
+    ImGuiCol_CheckBoxBorder,            //border of check box when un-checked
+    ImGuiCol_CheckBoxBorderHovered,     //border of check box when un-checked and hovered
 #endif
     ImGuiCol_TitleBg,
     ImGuiCol_TitleBgActive,
