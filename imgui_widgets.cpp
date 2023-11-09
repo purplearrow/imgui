@@ -6383,9 +6383,15 @@ bool ImGui::TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char* l
         // Unframed typed for tree nodes
         if (hovered || selected)
         {
+#ifdef USE_SPECTRUM_THEME
+            //change hover color of tree node (when node is opened)
             const ImU32 bg_col = GetColorU32((held && hovered) ? ImGuiCol_HeaderActive : hovered ? ImGuiCol_HeaderHovered : ImGuiCol_Header, 0.15f);
             RenderFrame(frame_bb.Min, frame_bb.Max, bg_col, false);
             window->DrawList->AddRect(frame_bb.Min, frame_bb.Max, bg_col);
+#else
+            const ImU32 bg_col = GetColorU32((held && hovered) ? ImGuiCol_HeaderActive : hovered ? ImGuiCol_HeaderHovered : ImGuiCol_Header);
+            RenderFrame(frame_bb.Min, frame_bb.Max, bg_col, false);
+#endif
         }
         RenderNavHighlight(frame_bb, id, nav_highlight_flags);
         if (flags & ImGuiTreeNodeFlags_Bullet)
@@ -6661,8 +6667,14 @@ bool ImGui::Selectable(const char* label, bool selected, ImGuiSelectableFlags fl
     }
     else
 #endif
+    if (hovered || selected)
     {
+#ifdef USE_SPECTRUM_THEME
+        //make highlight color of selectable more transparent
         const ImU32 col = GetColorU32((held && hovered) ? ImGuiCol_HeaderActive : hovered ? ImGuiCol_HeaderHovered : ImGuiCol_Header, 0.25f);
+#else
+        const ImU32 col = GetColorU32((held && hovered) ? ImGuiCol_HeaderActive : hovered ? ImGuiCol_HeaderHovered : ImGuiCol_Header);
+#endif
         RenderFrame(bb.Min, bb.Max, col, false, 0.0f);
     }
     if (g.NavId == id)
