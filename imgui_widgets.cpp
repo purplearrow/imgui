@@ -6363,7 +6363,12 @@ bool ImGui::TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char* l
 
         if (g.LogEnabled)
             LogSetNextTextDecoration("###", "###");
-        RenderTextClipped(text_pos, frame_bb.Max, label, label_end, &label_size, ImVec2(0, 0), nullptr, Spectrum::GRAY50);
+#ifdef USE_SPECTRUM_THEME
+        //change the color of text of TreeNode  (when node is closed)
+        RenderTextClipped(text_pos, frame_bb.Max, label, label_end, &label_size, ImVec2(0, 0), nullptr, GetColorU32(ImGuiCol_TextRevert));
+#else
+        RenderTextClipped(text_pos, frame_bb.Max, label, label_end, &label_size);
+#endif
     }
     else
     {

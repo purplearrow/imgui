@@ -24,6 +24,7 @@ namespace ImGui {
             colors[ImGuiCol_Text] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY800); // text on hovered controls is gray900
 #ifdef USE_SPECTRUM_THEME
             colors[ImGuiCol_TextHovered] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY900); // text on hovered controls is gray900
+            colors[ImGuiCol_TextRevert] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY50);  // text on tree node when node is closed
 #endif
             colors[ImGuiCol_TextDisabled] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY500);
             colors[ImGuiCol_WindowBg] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY100);
@@ -106,6 +107,7 @@ namespace ImGui {
             colors[ImGuiCol_Text] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY800); // text on hovered controls is gray900
 #ifdef USE_SPECTRUM_THEME
             colors[ImGuiCol_TextHovered] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY900); // text on hovered controls is gray900
+            colors[ImGuiCol_TextRevert] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY50);  // text on tree node when node is closed
 #endif
             colors[ImGuiCol_TextDisabled] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY500);
             colors[ImGuiCol_WindowBg] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY100);

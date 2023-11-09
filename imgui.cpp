@@ -3259,6 +3259,7 @@ const char* ImGui::GetStyleColorName(ImGuiCol idx)
     case ImGuiCol_Text: return "Text";
 #ifdef USE_SPECTRUM_THEME
     case ImGuiCol_TextHovered: return "TextHovered";
+    case ImGuiCol_TextRevert: return "TextRevert";
 #endif
     case ImGuiCol_TextDisabled: return "TextDisabled";
     case ImGuiCol_WindowBg: return "WindowBg";

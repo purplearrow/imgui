@@ -179,6 +179,7 @@ void ImGui::StyleColorsDark(ImGuiStyle* dst)
     colors[ImGuiCol_Text]                   = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
 #ifdef USE_SPECTRUM_THEME
     colors[ImGuiCol_TextHovered]            = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
+    colors[ImGuiCol_TextRevert]             = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);  // text on tree node when node is closed
 #endif
     colors[ImGuiCol_TextDisabled]           = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
     colors[ImGuiCol_WindowBg]               = ImVec4(0.06f, 0.06f, 0.06f, 0.94f);
@@ -256,6 +257,7 @@ void ImGui::StyleColorsClassic(ImGuiStyle* dst)
     colors[ImGuiCol_Text]                   = ImVec4(0.90f, 0.90f, 0.90f, 1.00f);
 #ifdef USE_SPECTRUM_THEME
     colors[ImGuiCol_TextHovered]            = ImVec4(0.90f, 0.90f, 0.90f, 1.00f);
+    colors[ImGuiCol_TextRevert]             = ImVec4(0.90f, 0.90f, 0.90f, 1.00f);  // text on tree node when node is closed
 #endif
     colors[ImGuiCol_TextDisabled]           = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
     colors[ImGuiCol_WindowBg]               = ImVec4(0.00f, 0.00f, 0.00f, 0.85f);
@@ -334,6 +336,7 @@ void ImGui::StyleColorsLight(ImGuiStyle* dst)
     colors[ImGuiCol_Text]                   = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
 #ifdef USE_SPECTRUM_THEME
     colors[ImGuiCol_TextHovered]            = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+    colors[ImGuiCol_TextRevert]             = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);  // text on tree node when node is closed
 #endif
     colors[ImGuiCol_TextDisabled]           = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
     colors[ImGuiCol_WindowBg]               = ImVec4(0.94f, 0.94f, 0.94f, 1.00f);

@@ -1636,6 +1636,7 @@ enum ImGuiCol_
     ImGuiCol_Text,
 #ifdef USE_SPECTRUM_THEME
     ImGuiCol_TextHovered,
+    ImGuiCol_TextRevert,
 #endif
     ImGuiCol_TextDisabled,
     ImGuiCol_WindowBg,              // Background of normal windows
