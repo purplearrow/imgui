@@ -3281,6 +3281,7 @@ const char* ImGui::GetStyleColorName(ImGuiCol idx)
     case ImGuiCol_CheckBoxBgHovered: return "CheckBoxBgHovered";
     case ImGuiCol_CheckBoxBorder: return "CheckBoxBorder";
     case ImGuiCol_CheckBoxBorderHovered: return "CheckBoxBorderHovered";
+    case ImGuiCol_ComboChecked: return "ComboChecked";
 #endif
     case ImGuiCol_TitleBg: return "TitleBg";
     case ImGuiCol_TitleBgActive: return "TitleBgActive";

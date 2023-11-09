@@ -1658,6 +1658,7 @@ enum ImGuiCol_
     ImGuiCol_CheckBoxBgHovered,         //background of check box when hovered
     ImGuiCol_CheckBoxBorder,            //border of check box when un-checked
     ImGuiCol_CheckBoxBorderHovered,     //border of check box when un-checked and hovered
+    ImGuiCol_ComboChecked,              //text color of checked combo item
 #endif
     ImGuiCol_TitleBg,
     ImGuiCol_TitleBgActive,

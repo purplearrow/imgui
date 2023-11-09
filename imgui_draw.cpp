@@ -201,6 +201,7 @@ void ImGui::StyleColorsDark(ImGuiStyle* dst)
     colors[ImGuiCol_CheckBoxBgHovered]      = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);  //ImGuiCol_RadioButtonActiveHovered
     colors[ImGuiCol_CheckBoxBorder]         = ImVec4(0.16f, 0.35f, 0.59f, 1.00f);  //ImGuiCol_RadioButtonBorder
     colors[ImGuiCol_CheckBoxBorderHovered]  = ImVec4(0.21f, 0.47f, 0.78f, 1.00f);  //ImGuiCol_RadioButtonBorderHovered
+    colors[ImGuiCol_ComboChecked]           = ImVec4(0.24f, 0.53f, 0.88f, 1.00f);  //ImGuiCol_CheckBoxBg
 #endif
     colors[ImGuiCol_TitleBg]                = ImVec4(0.04f, 0.04f, 0.04f, 1.00f);
     colors[ImGuiCol_TitleBgActive]          = ImVec4(0.16f, 0.29f, 0.48f, 1.00f);
@@ -279,6 +280,7 @@ void ImGui::StyleColorsClassic(ImGuiStyle* dst)
     colors[ImGuiCol_CheckBoxBgHovered]      = ImVec4(0.43f, 0.43f, 0.98f, 1.00f);  //ImGuiCol_RadioButtonActiveHovered
     colors[ImGuiCol_CheckBoxBorder]         = ImVec4(0.26f, 0.26f, 0.59f, 1.00f);  //ImGuiCol_RadioButtonBorder
     colors[ImGuiCol_CheckBoxBorderHovered]  = ImVec4(0.35f, 0.35f, 0.78f, 1.00f);  //ImGuiCol_RadioButtonBorderHovered
+    colors[ImGuiCol_ComboChecked]           = ImVec4(0.35f, 0.35f, 0.78f, 1.00f);  //ImGuiCol_CheckBoxBg
 #endif
     colors[ImGuiCol_TitleBg]                = ImVec4(0.27f, 0.27f, 0.54f, 0.83f);
     colors[ImGuiCol_TitleBgActive]          = ImVec4(0.32f, 0.32f, 0.63f, 0.87f);
@@ -358,6 +360,7 @@ void ImGui::StyleColorsLight(ImGuiStyle* dst)
     colors[ImGuiCol_CheckBoxBgHovered]      = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);  //ImGuiCol_RadioButtonActiveHovered
     colors[ImGuiCol_CheckBoxBorder]         = ImVec4(0.16f, 0.36f, 0.59f, 1.00f);  //ImGuiCol_RadioButtonBorder
     colors[ImGuiCol_CheckBoxBorderHovered]  = ImVec4(0.21f, 0.47f, 0.78f, 1.00f);  //ImGuiCol_RadioButtonBorderHovered
+    colors[ImGuiCol_ComboChecked]           = ImVec4(0.21f, 0.47f, 0.78f, 1.00f);  //ImGuiCol_CheckBoxBg
 #endif
     colors[ImGuiCol_TitleBg]                = ImVec4(0.96f, 0.96f, 0.96f, 1.00f);
     colors[ImGuiCol_TitleBgActive]          = ImVec4(0.82f, 0.82f, 0.82f, 1.00f);

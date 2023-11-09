@@ -1862,18 +1862,26 @@ bool ImGui::BeginComboPopup(ImGuiID popup_id, const ImRect& bb, ImGuiComboFlags 
 
     // We don't use BeginPopupEx() solely because we have a custom name string, which we could make an argument to BeginPopupEx()
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_Popup | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoMove;
+#ifdef USE_SPECTRUM_THEME
     PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(g.Style.FramePadding.x, g.Style.WindowPadding.y));  // Horizontally align ourselves with the framed text
-    PushStyleVar(ImGuiStyleVar_PopupRounding, 4.0f);
+    PushStyleVar(ImGuiStyleVar_PopupRounding, 4.0f);   //spectrum, make corner of popup round
     bool ret = Begin(name, NULL, window_flags);
     PopStyleVar();
     PopStyleVar();
+#else
+    PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(g.Style.FramePadding.x, g.Style.WindowPadding.y)); // Horizontally align ourselves with the framed text
+    bool ret = Begin(name, NULL, window_flags);
+    PopStyleVar();
+#endif
     if (!ret)
     {
         EndPopup();
         IM_ASSERT(0);   // This should never happen as we tested for IsPopupOpen() above
         return false;
     }
+#ifdef USE_SPECTRUM_THEME
     GetCurrentWindow()->DC.IsComboPopup = true;
+#endif
     return true;
 }
 
@@ -6636,22 +6644,23 @@ bool ImGui::Selectable(const char* label, bool selected, ImGuiSelectableFlags fl
         g.LastItemData.StatusFlags |= ImGuiItemStatusFlags_ToggledSelection;
 
     // Render
+#ifdef USE_SPECTRUM_THEME
     if (window->DC.IsComboPopup) { // ImGui-Spectrum: change Selectable rendering for ComboBox and ListBox
-
         if (hovered) {
-            RenderFrame(bb.Min, bb.Max, Spectrum::color_alpha(0x0A, Spectrum::Static::GRAY900), false, 0.0f);
+            //RenderFrame(bb.Min, bb.Max, Spectrum::color_alpha(0x0A, Spectrum::Static::GRAY900), false, 0.0f);
+            RenderFrame(bb.Min, bb.Max, GetColorU32(ImGuiCol_HeaderHovered, 0.25f), false, 0.0f);  //change to this
             RenderNavHighlight(bb, id, ImGuiNavHighlightFlags_TypeThin | ImGuiNavHighlightFlags_NoRounding);
         }
 
         if (selected) { // add a checkmark and text is blue
             float height = bb.GetHeight();
             RenderCheckMark(window->DrawList, ImVec2(bb.Max.x - height, bb.GetCenter().y - height / 2),
-                Spectrum::BLUE600, height / 3.0f * 2.0f);
-            PushStyleColor(ImGuiCol_Text, Spectrum::BLUE600);
+                GetColorU32(ImGuiCol_ComboChecked), height / 3.0f * 2.0f);
+            PushStyleColor(ImGuiCol_Text, GetColorU32(ImGuiCol_ComboChecked));
         }
-
     }
-    else if (hovered || selected)
+    else
+#endif
     {
         const ImU32 col = GetColorU32((held && hovered) ? ImGuiCol_HeaderActive : hovered ? ImGuiCol_HeaderHovered : ImGuiCol_Header, 0.25f);
         RenderFrame(bb.Min, bb.Max, col, false, 0.0f);
@@ -6665,8 +6674,10 @@ bool ImGui::Selectable(const char* label, bool selected, ImGuiSelectableFlags fl
         TablePopBackgroundChannel();
 
     RenderTextClipped(text_min, text_max, label, NULL, &label_size, style.SelectableTextAlign, &bb);
-    if (window->DC.IsComboPopup && selected) PopStyleColor(); // ImGui-Spectrum: undo blue color from above
-
+#ifdef USE_SPECTRUM_THEME
+    if (window->DC.IsComboPopup && selected)
+        PopStyleColor(); // ImGui-Spectrum: undo blue color from above
+#endif
     // Automatically close popups
     if (pressed && (window->Flags & ImGuiWindowFlags_Popup) && !(flags & ImGuiSelectableFlags_DontClosePopups) && !(g.LastItemData.InFlags & ImGuiItemFlags_SelectableDontClosePopup))
         CloseCurrentPopup();
@@ -6734,7 +6745,9 @@ bool ImGui::BeginListBox(const char* label, const ImVec2& size_arg)
     }
 
     BeginChildFrame(id, frame_bb.GetSize());
+#ifdef USE_SPECTRUM_THEME
     GetCurrentWindow()->DC.IsComboPopup = true;
+#endif
     return true;
 }
 
