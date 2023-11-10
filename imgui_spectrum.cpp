@@ -13,12 +13,25 @@ namespace ImGui {
             assert(font != nullptr);
             io.FontDefault = font;
         }
+        void StyleRoundSpectrum(bool isRound)
+        {
+            ImGuiStyle* style = &ImGui::GetStyle();
+            if (isRound)
+            {
+                style->GrabRounding = 4.0f;
+                style->FrameRounding = 4.0f;
+                style->FrameBorderSize = 1.0f;
+            }
+            else
+            {
+                style->GrabRounding = 0.0f;
+                style->FrameRounding = 0.0f;
+                style->FrameBorderSize = 0.0f;
+            }
+        }
 
         void StyleColorsSpectrumLight() {
             ImGuiStyle* style = &ImGui::GetStyle();
-            style->GrabRounding = 4.0f;
-            style->FrameRounding = 4.0f;
-            style->FrameBorderSize = 1.0f;
 
             ImVec4* colors = style->Colors;
             colors[ImGuiCol_Text] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY800); // text on hovered controls is gray900
@@ -96,9 +109,6 @@ namespace ImGui {
         }
         void StyleColorsSpectrumDark() {
             ImGuiStyle* style = &ImGui::GetStyle();
-            style->GrabRounding = 4.0f;
-            style->FrameRounding = 4.0f;
-            style->FrameBorderSize = 1.0f;
 
             ImVec4* colors = style->Colors;
             colors[ImGuiCol_Text] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY800); // text on hovered controls is gray900

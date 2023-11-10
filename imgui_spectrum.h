@@ -27,6 +27,7 @@ namespace ImGui {
         void LoadFont(float size = 16.0f);
 
         // Sets the ImGui style to Spectrum
+        void StyleRoundSpectrum(bool isRound);
         void StyleColorsSpectrumLight();
         void StyleColorsSpectrumDark();
 
