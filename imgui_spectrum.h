@@ -46,7 +46,7 @@ namespace ImGui {
             }
         }
         // all colors are from http://spectrum.corp.adobe.com/color.html
-
+        // ref: https://spectrum.adobe.com/page/color-palette/   blue is updated to 6.0.0
         inline unsigned int color_alpha(unsigned int alpha, unsigned int c) {
             return ((alpha & 0xFF) << 24) | (c & 0x00FFFFFF);
         }
@@ -83,20 +83,27 @@ namespace ImGui {
 
         namespace Light {
             const unsigned int GRAY50 = Color(0xFFFFFF);
-            const unsigned int GRAY75 = Color(0xFAFAFA);
-            const unsigned int GRAY100 = Color(0xF5F5F5);
-            const unsigned int GRAY200 = Color(0xEAEAEA);
-            const unsigned int GRAY300 = Color(0xE1E1E1);
-            const unsigned int GRAY400 = Color(0xCACACA);
-            const unsigned int GRAY500 = Color(0xB3B3B3);
-            const unsigned int GRAY600 = Color(0x8E8E8E);
-            const unsigned int GRAY700 = Color(0x707070);
-            const unsigned int GRAY800 = Color(0x4B4B4B);
-            const unsigned int GRAY900 = Color(0x2C2C2C);
-            const unsigned int BLUE400 = Color(0x2680EB);
-            const unsigned int BLUE500 = Color(0x1473E6);
-            const unsigned int BLUE600 = Color(0x0D66D0);
-            const unsigned int BLUE700 = Color(0x095ABA);
+            const unsigned int GRAY75 = Color(0xFDFDFD);
+            const unsigned int GRAY100 = Color(0xF8F8F8);
+            const unsigned int GRAY200 = Color(0xE6E6E6);
+            const unsigned int GRAY300 = Color(0xD5D5D5);
+            const unsigned int GRAY400 = Color(0xB1B1B1);
+            const unsigned int GRAY500 = Color(0x909090);
+            const unsigned int GRAY600 = Color(0x6D6D6D);
+            const unsigned int GRAY700 = Color(0x464646);
+            const unsigned int GRAY800 = Color(0x222222);
+            const unsigned int GRAY900 = Color(0x000000);
+            //I use BLUE100 == original BLUE300
+            const unsigned int BLUE100 = Color(0xB5DEFF);
+            const unsigned int BLUE200 = Color(0x96CEFD);
+            const unsigned int BLUE300 = Color(0x78BBFA);
+            const unsigned int BLUE400 = Color(0x59A7F6);
+            const unsigned int BLUE500 = Color(0x3892F3);
+            const unsigned int BLUE600 = Color(0x147AF3);
+            const unsigned int BLUE700 = Color(0x0265DC);
+            const unsigned int BLUE800 = Color(0x0054B6);
+            const unsigned int BLUE900 = Color(0x004491);
+            //the rest are not changed
             const unsigned int RED400 = Color(0xE34850);
             const unsigned int RED500 = Color(0xD7373F);
             const unsigned int RED600 = Color(0xC9252D);
@@ -143,21 +150,28 @@ namespace ImGui {
             const unsigned int PURPLE700 = Color(0x6F38B1);
         }
         namespace Dark {
-            const unsigned int GRAY50 = Color(0x252525);
-            const unsigned int GRAY75 = Color(0x2F2F2F);
+            const unsigned int GRAY50 = Color(0x1D1D1D);
+            const unsigned int GRAY75 = Color(0x262626);
             const unsigned int GRAY100 = Color(0x323232);
-            const unsigned int GRAY200 = Color(0x393939);
-            const unsigned int GRAY300 = Color(0x3E3E3E);
-            const unsigned int GRAY400 = Color(0x4D4D4D);
-            const unsigned int GRAY500 = Color(0x5C5C5C);
-            const unsigned int GRAY600 = Color(0x7B7B7B);
-            const unsigned int GRAY700 = Color(0x999999);
-            const unsigned int GRAY800 = Color(0xCDCDCD);
+            const unsigned int GRAY200 = Color(0x3F3F3F);
+            const unsigned int GRAY300 = Color(0x545454);
+            const unsigned int GRAY400 = Color(0x707070);
+            const unsigned int GRAY500 = Color(0x909090);
+            const unsigned int GRAY600 = Color(0xB2B2B2);
+            const unsigned int GRAY700 = Color(0xD1D1D1);
+            const unsigned int GRAY800 = Color(0xEBEBEB);
             const unsigned int GRAY900 = Color(0xFFFFFF);
-            const unsigned int BLUE400 = Color(0x2680EB);
-            const unsigned int BLUE500 = Color(0x378EF0);
-            const unsigned int BLUE600 = Color(0x4B9CF5);
-            const unsigned int BLUE700 = Color(0x5AA9FA);
+            //I use BLUE100 == original BLUE300
+            const unsigned int BLUE100 = Color(0x004DA3);
+            const unsigned int BLUE200 = Color(0x0059C2);
+            const unsigned int BLUE300 = Color(0x0367E0);
+            const unsigned int BLUE400 = Color(0x1379F3);
+            const unsigned int BLUE500 = Color(0x348FF4);
+            const unsigned int BLUE600 = Color(0x54A3F6);
+            const unsigned int BLUE700 = Color(0x72B7F9);
+            const unsigned int BLUE800 = Color(0x8FCAFC);
+            const unsigned int BLUE900 = Color(0xAEDBFE);
+            //the rest are not changed
             const unsigned int RED400 = Color(0xE34850);
             const unsigned int RED500 = Color(0xEC5B62);
             const unsigned int RED600 = Color(0xF76D74);

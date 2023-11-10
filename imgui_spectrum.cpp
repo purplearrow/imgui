@@ -71,26 +71,22 @@ namespace ImGui {
             colors[ImGuiCol_ResizeGrip] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY400);
             colors[ImGuiCol_ResizeGripHovered] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY600);
             colors[ImGuiCol_ResizeGripActive] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY700);
-
-            colors[ImGuiCol_Tab] = ColorConvertU32ToFloat4(Spectrum::Light::BLUE400);
-            colors[ImGuiCol_TabHovered] = ColorConvertU32ToFloat4(Spectrum::Light::BLUE500);
-            colors[ImGuiCol_TabActive] = ColorConvertU32ToFloat4(Spectrum::Light::BLUE600);
-            colors[ImGuiCol_TabUnfocused] = ColorConvertU32ToFloat4(Spectrum::Light::BLUE300);
-            colors[ImGuiCol_TabUnfocusedActive] = ColorConvertU32ToFloat4(Spectrum::Light::BLUE500);
+            colors[ImGuiCol_Tab] = ColorConvertU32ToFloat4(Spectrum::Light::BLUE300);
+            colors[ImGuiCol_TabHovered] = ColorConvertU32ToFloat4(Spectrum::Light::BLUE400);
+            colors[ImGuiCol_TabActive] = ColorConvertU32ToFloat4(Spectrum::Light::BLUE500);
+            colors[ImGuiCol_TabUnfocused] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY400);
+            colors[ImGuiCol_TabUnfocusedActive] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY600);
             colors[ImGuiCol_DockingPreview] = ColorConvertU32ToFloat4(Spectrum::Light::BLUE400) * ImVec4(1.0f, 1.0f, 1.0f, 0.7f);
             colors[ImGuiCol_DockingEmptyBg] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY200);
-
             colors[ImGuiCol_PlotLines] = ColorConvertU32ToFloat4(Spectrum::Light::BLUE400);
             colors[ImGuiCol_PlotLinesHovered] = ColorConvertU32ToFloat4(Spectrum::Light::BLUE600);
             colors[ImGuiCol_PlotHistogram] = ColorConvertU32ToFloat4(Spectrum::Light::BLUE400);
             colors[ImGuiCol_PlotHistogramHovered] = ColorConvertU32ToFloat4(Spectrum::Light::BLUE600);
-
             colors[ImGuiCol_TableHeaderBg] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY50);
             colors[ImGuiCol_TableBorderStrong] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY600);   // Prefer using Alpha=1.0 here
             colors[ImGuiCol_TableBorderLight] = ColorConvertU32ToFloat4(Spectrum::Light::GRAY400);   // Prefer using Alpha=1.0 here
             colors[ImGuiCol_TableRowBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
             colors[ImGuiCol_TableRowBgAlt] = ImVec4(0.30f, 0.30f, 0.30f, 0.09f);
-
             colors[ImGuiCol_TextSelectedBg] = ColorConvertU32ToFloat4((Spectrum::Light::BLUE400 & 0x00FFFFFF) | 0x33000000);
             colors[ImGuiCol_DragDropTarget] = ImVec4(1.00f, 1.00f, 0.00f, 0.90f);
             colors[ImGuiCol_NavHighlight] = ColorConvertU32ToFloat4((Spectrum::Light::GRAY900 & 0x00FFFFFF) | 0x0A000000);
@@ -155,31 +151,22 @@ namespace ImGui {
             colors[ImGuiCol_ResizeGrip] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY400);
             colors[ImGuiCol_ResizeGripHovered] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY600);
             colors[ImGuiCol_ResizeGripActive] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY700);
-
-            colors[ImGuiCol_Tab] = ImLerp(colors[ImGuiCol_Header], colors[ImGuiCol_TitleBgActive], 0.80f);
-            colors[ImGuiCol_TabHovered] = colors[ImGuiCol_HeaderHovered];
-            colors[ImGuiCol_TabActive] = ImLerp(colors[ImGuiCol_HeaderActive], colors[ImGuiCol_TitleBgActive], 0.60f);
-            colors[ImGuiCol_TabUnfocused] = ImLerp(colors[ImGuiCol_Tab], colors[ImGuiCol_TitleBg], 0.80f);
-            colors[ImGuiCol_TabUnfocusedActive] = ImLerp(colors[ImGuiCol_TabActive], colors[ImGuiCol_TitleBg], 0.40f);
-            //colors[ImGuiCol_Tab] = ColorConvertU32ToFloat4(Spectrum::Dark::BLUE400);
-            //colors[ImGuiCol_TabHovered] = ColorConvertU32ToFloat4(Spectrum::Dark::BLUE500);
-            //colors[ImGuiCol_TabActive] = ColorConvertU32ToFloat4(Spectrum::Dark::BLUE600);
-            //colors[ImGuiCol_TabUnfocused] = ColorConvertU32ToFloat4(Spectrum::Dark::BLUE300);
-            //colors[ImGuiCol_TabUnfocusedActive] = ColorConvertU32ToFloat4(Spectrum::Dark::BLUE500);
+            colors[ImGuiCol_Tab] = ColorConvertU32ToFloat4(Spectrum::Dark::BLUE200);
+            colors[ImGuiCol_TabHovered] = ColorConvertU32ToFloat4(Spectrum::Dark::BLUE300);
+            colors[ImGuiCol_TabActive] = ColorConvertU32ToFloat4(Spectrum::Dark::BLUE400);
+            colors[ImGuiCol_TabUnfocused] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY300);
+            colors[ImGuiCol_TabUnfocusedActive] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY500);
             colors[ImGuiCol_DockingPreview] = ColorConvertU32ToFloat4(Spectrum::Dark::BLUE400) * ImVec4(1.0f, 1.0f, 1.0f, 0.7f);
             colors[ImGuiCol_DockingEmptyBg] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY200);
-
             colors[ImGuiCol_PlotLines] = ColorConvertU32ToFloat4(Spectrum::Dark::BLUE400);
             colors[ImGuiCol_PlotLinesHovered] = ColorConvertU32ToFloat4(Spectrum::Dark::BLUE600);
             colors[ImGuiCol_PlotHistogram] = ColorConvertU32ToFloat4(Spectrum::Dark::BLUE400);
             colors[ImGuiCol_PlotHistogramHovered] = ColorConvertU32ToFloat4(Spectrum::Dark::BLUE600);
-
             colors[ImGuiCol_TableHeaderBg] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY50);
             colors[ImGuiCol_TableBorderStrong] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY600);   // Prefer using Alpha=1.0 here
             colors[ImGuiCol_TableBorderLight] = ColorConvertU32ToFloat4(Spectrum::Dark::GRAY400);   // Prefer using Alpha=1.0 here
             colors[ImGuiCol_TableRowBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
             colors[ImGuiCol_TableRowBgAlt] = ImVec4(0.30f, 0.30f, 0.30f, 0.09f);
-
             colors[ImGuiCol_TextSelectedBg] = ColorConvertU32ToFloat4((Spectrum::Dark::BLUE400 & 0x00FFFFFF) | 0x33000000);
             colors[ImGuiCol_DragDropTarget] = ImVec4(1.00f, 1.00f, 0.00f, 0.90f);
             colors[ImGuiCol_NavHighlight] = ColorConvertU32ToFloat4((Spectrum::Dark::GRAY900 & 0x00FFFFFF) | 0x0A000000);
