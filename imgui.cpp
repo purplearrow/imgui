@@ -3246,6 +3246,10 @@ const char* ImGui::GetStyleColorName(ImGuiCol idx)
     switch (idx)
     {
     case ImGuiCol_Text: return "Text";
+#ifdef USE_SPECTRUM_THEME
+    case ImGuiCol_TextHovered: return "TextHovered";
+    case ImGuiCol_TextRevert: return "TextRevert";
+#endif
     case ImGuiCol_TextDisabled: return "TextDisabled";
     case ImGuiCol_WindowBg: return "WindowBg";
     case ImGuiCol_ChildBg: return "ChildBg";
@@ -3255,6 +3259,19 @@ const char* ImGui::GetStyleColorName(ImGuiCol idx)
     case ImGuiCol_FrameBg: return "FrameBg";
     case ImGuiCol_FrameBgHovered: return "FrameBgHovered";
     case ImGuiCol_FrameBgActive: return "FrameBgActive";
+#ifdef USE_SPECTRUM_THEME
+    case ImGuiCol_RadioButtonCenter: return "RadioBtnCenter";
+    case ImGuiCol_RadioButtonBorder: return "RadioBtnBorder";
+    case ImGuiCol_RadioButtonBorderHovered: return "RadioBtnBorderHovered";
+    case ImGuiCol_RadioButtonActive: return "RadioBtnActive";
+    case ImGuiCol_RadioButtonActiveHovered: return "RadioButtonActiveHovered";
+    case ImGuiCol_CheckBoxMark: return "CheckBoxMark";
+    case ImGuiCol_CheckBoxBg: return "CheckBoxBg";
+    case ImGuiCol_CheckBoxBgHovered: return "CheckBoxBgHovered";
+    case ImGuiCol_CheckBoxBorder: return "CheckBoxBorder";
+    case ImGuiCol_CheckBoxBorderHovered: return "CheckBoxBorderHovered";
+    case ImGuiCol_ComboChecked: return "ComboChecked";
+#endif
     case ImGuiCol_TitleBg: return "TitleBg";
     case ImGuiCol_TitleBgActive: return "TitleBgActive";
     case ImGuiCol_TitleBgCollapsed: return "TitleBgCollapsed";
@@ -3326,7 +3343,11 @@ const char* ImGui::FindRenderedTextEnd(const char* text, const char* text_end)
 
 // Internal ImGui functions to render text
 // RenderText***() functions calls ImDrawList::AddText() calls ImBitmapFont::RenderText()
+#ifdef USE_SPECTRUM_THEME
+void ImGui::RenderText(ImVec2 pos, const char* text, const char* text_end, bool hide_text_after_hash, ImU32 color)
+#else
 void ImGui::RenderText(ImVec2 pos, const char* text, const char* text_end, bool hide_text_after_hash)
+#endif
 {
     ImGuiContext& g = *GImGui;
     ImGuiWindow* window = g.CurrentWindow;
@@ -3346,13 +3367,20 @@ void ImGui::RenderText(ImVec2 pos, const char* text, const char* text_end, bool 
 
     if (text != text_display_end)
     {
+#ifdef USE_SPECTRUM_THEME
+        window->DrawList->AddText(g.Font, g.FontSize, pos, (color == 0 ? GetColorU32(ImGuiCol_Text) : color), text, text_display_end);
+#else
         window->DrawList->AddText(g.Font, g.FontSize, pos, GetColorU32(ImGuiCol_Text), text, text_display_end);
+#endif
         if (g.LogEnabled)
             LogRenderedText(&pos, text, text_display_end);
     }
 }
-
+#ifdef USE_SPECTRUM_THEME
+void ImGui::RenderTextWrapped(ImVec2 pos, const char* text, const char* text_end, float wrap_width, ImU32 color)
+#else
 void ImGui::RenderTextWrapped(ImVec2 pos, const char* text, const char* text_end, float wrap_width)
+#endif
 {
     ImGuiContext& g = *GImGui;
     ImGuiWindow* window = g.CurrentWindow;
@@ -3362,7 +3390,11 @@ void ImGui::RenderTextWrapped(ImVec2 pos, const char* text, const char* text_end
 
     if (text != text_end)
     {
+#ifdef USE_SPECTRUM_THEME
+        window->DrawList->AddText(g.Font, g.FontSize, pos, (color == 0 ? GetColorU32(ImGuiCol_Text) : color), text, text_end, wrap_width);
+#else
         window->DrawList->AddText(g.Font, g.FontSize, pos, GetColorU32(ImGuiCol_Text), text, text_end, wrap_width);
+#endif
         if (g.LogEnabled)
             LogRenderedText(&pos, text, text_end);
     }
@@ -3373,7 +3405,11 @@ void ImGui::RenderTextWrapped(ImVec2 pos, const char* text, const char* text_end
 // FIXME-OPT: Since we have or calculate text_size we could coarse clip whole block immediately, especally for text above draw_list->DrawList.
 // Effectively as this is called from widget doing their own coarse clipping it's not very valuable presently. Next time function will take
 // better advantage of the render function taking size into account for coarse clipping.
-void ImGui::RenderTextClippedEx(ImDrawList* draw_list, const ImVec2& pos_min, const ImVec2& pos_max, const char* text, const char* text_display_end, const ImVec2* text_size_if_known, const ImVec2& align, const ImRect* clip_rect)
+#ifdef USE_SPECTRUM_THEME
+void ImGui::RenderTextClippedEx(ImDrawList* draw_list, const ImVec2& pos_min, const ImVec2& pos_max, const char* text, const char* text_display_end, const ImVec2* text_size_if_known, const ImVec2& align, const ImRect* clip_rect, ImU32 color)
+#else
+void ImGui::RenderTextClippedEx(ImDrawList* draw_list, const ImVec2& pos_min, const ImVec2& pos_max, const char* text, const char* text_display_end, const ImVec2* text_size_if_known, const ImVec2& align, const ImRect* clip_rect, ImU32 color)
+#endif
 {
     // Perform CPU side clipping for single clipped element to avoid using scissor state
     ImVec2 pos = pos_min;
@@ -3393,15 +3429,26 @@ void ImGui::RenderTextClippedEx(ImDrawList* draw_list, const ImVec2& pos_min, co
     if (need_clipping)
     {
         ImVec4 fine_clip_rect(clip_min->x, clip_min->y, clip_max->x, clip_max->y);
+#ifdef USE_SPECTRUM_THEME
+        draw_list->AddText(NULL, 0.0f, pos, (color != 0 ? color : GetColorU32(ImGuiCol_Text)), text, text_display_end, 0.0f, &fine_clip_rect);
+#else
         draw_list->AddText(NULL, 0.0f, pos, GetColorU32(ImGuiCol_Text), text, text_display_end, 0.0f, &fine_clip_rect);
+#endif
     }
     else
     {
+#ifdef USE_SPECTRUM_THEME
+        draw_list->AddText(NULL, 0.0f, pos, (color != 0 ? color : GetColorU32(ImGuiCol_Text)), text, text_display_end, 0.0f, NULL);
+#else
         draw_list->AddText(NULL, 0.0f, pos, GetColorU32(ImGuiCol_Text), text, text_display_end, 0.0f, NULL);
+#endif
     }
 }
-
+#ifdef USE_SPECTRUM_THEME
+void ImGui::RenderTextClipped(const ImVec2& pos_min, const ImVec2& pos_max, const char* text, const char* text_end, const ImVec2* text_size_if_known, const ImVec2& align, const ImRect* clip_rect, ImU32 color)
+#else
 void ImGui::RenderTextClipped(const ImVec2& pos_min, const ImVec2& pos_max, const char* text, const char* text_end, const ImVec2* text_size_if_known, const ImVec2& align, const ImRect* clip_rect)
+#endif
 {
     // Hide anything after a '##' string
     const char* text_display_end = FindRenderedTextEnd(text, text_end);
@@ -3411,7 +3458,11 @@ void ImGui::RenderTextClipped(const ImVec2& pos_min, const ImVec2& pos_max, cons
 
     ImGuiContext& g = *GImGui;
     ImGuiWindow* window = g.CurrentWindow;
+#ifdef USE_SPECTRUM_THEME
+    RenderTextClippedEx(window->DrawList, pos_min, pos_max, text, text_display_end, text_size_if_known, align, clip_rect, color);
+#else
     RenderTextClippedEx(window->DrawList, pos_min, pos_max, text, text_display_end, text_size_if_known, align, clip_rect);
+#endif
     if (g.LogEnabled)
         LogRenderedText(&pos_min, text, text_display_end);
 }
@@ -3419,7 +3470,11 @@ void ImGui::RenderTextClipped(const ImVec2& pos_min, const ImVec2& pos_max, cons
 // Another overly complex function until we reorganize everything into a nice all-in-one helper.
 // This is made more complex because we have dissociated the layout rectangle (pos_min..pos_max) which define _where_ the ellipsis is, from actual clipping of text and limit of the ellipsis display.
 // This is because in the context of tabs we selectively hide part of the text when the Close Button appears, but we don't want the ellipsis to move.
+#ifdef USE_SPECTRUM_THEME
+void ImGui::RenderTextEllipsis(ImDrawList* draw_list, const ImVec2& pos_min, const ImVec2& pos_max, float clip_max_x, float ellipsis_max_x, const char* text, const char* text_end_full, const ImVec2* text_size_if_known, ImU32 color)
+#else
 void ImGui::RenderTextEllipsis(ImDrawList* draw_list, const ImVec2& pos_min, const ImVec2& pos_max, float clip_max_x, float ellipsis_max_x, const char* text, const char* text_end_full, const ImVec2* text_size_if_known)
+#endif
 {
     ImGuiContext& g = *GImGui;
     if (text_end_full == NULL)
@@ -3460,7 +3515,11 @@ void ImGui::RenderTextEllipsis(ImDrawList* draw_list, const ImVec2& pos_min, con
         }
 
         // Render text, render ellipsis
+#ifdef USE_SPECTRUM_THEME
+        RenderTextClippedEx(draw_list, pos_min, ImVec2(clip_max_x, pos_max.y), text, text_end_ellipsis, &text_size, ImVec2(0.0f, 0.0f), nullptr, color);
+#else
         RenderTextClippedEx(draw_list, pos_min, ImVec2(clip_max_x, pos_max.y), text, text_end_ellipsis, &text_size, ImVec2(0.0f, 0.0f));
+#endif
         ImVec2 ellipsis_pos = ImTrunc(ImVec2(pos_min.x + text_size_clipped_x, pos_min.y));
         if (ellipsis_pos.x + ellipsis_width <= ellipsis_max_x)
             for (int i = 0; i < font->EllipsisCharCount; i++, ellipsis_pos.x += font->EllipsisCharStep * font_scale)
@@ -3468,7 +3527,11 @@ void ImGui::RenderTextEllipsis(ImDrawList* draw_list, const ImVec2& pos_min, con
     }
     else
     {
+#ifdef USE_SPECTRUM_THEME
+        RenderTextClippedEx(draw_list, pos_min, ImVec2(clip_max_x, pos_max.y), text, text_end_full, &text_size, ImVec2(0.0f, 0.0f), nullptr, color);
+#else
         RenderTextClippedEx(draw_list, pos_min, ImVec2(clip_max_x, pos_max.y), text, text_end_full, &text_size, ImVec2(0.0f, 0.0f));
+#endif
     }
 
     if (g.LogEnabled)

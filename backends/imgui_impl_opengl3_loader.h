@@ -181,8 +181,12 @@ typedef khronos_uint8_t GLubyte;
 #define GL_LINEAR                         0x2601
 #define GL_TEXTURE_MAG_FILTER             0x2800
 #define GL_TEXTURE_MIN_FILTER             0x2801
+#define GL_TEXTURE_WRAP_S                 0x2802
+#define GL_TEXTURE_WRAP_T                 0x2803
+#define GL_REPEAT                         0x2901
 typedef void (APIENTRYP PFNGLPOLYGONMODEPROC) (GLenum face, GLenum mode);
 typedef void (APIENTRYP PFNGLSCISSORPROC) (GLint x, GLint y, GLsizei width, GLsizei height);
+typedef void (APIENTRYP PFNGLTEXPARAMETERFPROC) (GLenum target, GLenum pname, GLfloat param);
 typedef void (APIENTRYP PFNGLTEXPARAMETERIPROC) (GLenum target, GLenum pname, GLint param);
 typedef void (APIENTRYP PFNGLTEXIMAGE2DPROC) (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void *pixels);
 typedef void (APIENTRYP PFNGLCLEARPROC) (GLbitfield mask);
@@ -200,6 +204,7 @@ typedef void (APIENTRYP PFNGLVIEWPORTPROC) (GLint x, GLint y, GLsizei width, GLs
 #ifdef GL_GLEXT_PROTOTYPES
 GLAPI void APIENTRY glPolygonMode (GLenum face, GLenum mode);
 GLAPI void APIENTRY glScissor (GLint x, GLint y, GLsizei width, GLsizei height);
+GLAPI void APIENTRY glTexParameterf (GLenum target, GLenum pname, GLfloat param);
 GLAPI void APIENTRY glTexParameteri (GLenum target, GLenum pname, GLint param);
 GLAPI void APIENTRY glTexImage2D (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void *pixels);
 GLAPI void APIENTRY glClear (GLbitfield mask);
@@ -231,6 +236,9 @@ GLAPI void APIENTRY glDeleteTextures (GLsizei n, const GLuint *textures);
 GLAPI void APIENTRY glGenTextures (GLsizei n, GLuint *textures);
 #endif
 #endif /* GL_VERSION_1_1 */
+#ifndef GL_VERSION_1_2
+#define GL_CLAMP_TO_EDGE                  0x812F
+#endif /* GL_VERSION_1_2 */
 #ifndef GL_VERSION_1_3
 #define GL_TEXTURE0                       0x84C0
 #define GL_ACTIVE_TEXTURE                 0x84E0
@@ -351,16 +359,22 @@ typedef khronos_uint16_t GLhalf;
 #define GL_MAJOR_VERSION                  0x821B
 #define GL_MINOR_VERSION                  0x821C
 #define GL_NUM_EXTENSIONS                 0x821D
+#define GL_COLOR_ATTACHMENT0              0x8CE0
+#define GL_FRAMEBUFFER                    0x8D40
 #define GL_FRAMEBUFFER_SRGB               0x8DB9
 #define GL_VERTEX_ARRAY_BINDING           0x85B5
 typedef void (APIENTRYP PFNGLGETBOOLEANI_VPROC) (GLenum target, GLuint index, GLboolean *data);
 typedef void (APIENTRYP PFNGLGETINTEGERI_VPROC) (GLenum target, GLuint index, GLint *data);
 typedef const GLubyte *(APIENTRYP PFNGLGETSTRINGIPROC) (GLenum name, GLuint index);
+typedef void (APIENTRYP PFNGLBINDFRAMEBUFFERPROC) (GLenum target, GLuint framebuffer);
+typedef void (APIENTRYP PFNGLFRAMEBUFFERTEXTURE2DPROC) (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
 typedef void (APIENTRYP PFNGLBINDVERTEXARRAYPROC) (GLuint array);
 typedef void (APIENTRYP PFNGLDELETEVERTEXARRAYSPROC) (GLsizei n, const GLuint *arrays);
 typedef void (APIENTRYP PFNGLGENVERTEXARRAYSPROC) (GLsizei n, GLuint *arrays);
 #ifdef GL_GLEXT_PROTOTYPES
 GLAPI const GLubyte *APIENTRY glGetStringi (GLenum name, GLuint index);
+GLAPI void APIENTRY glBindFramebuffer (GLenum target, GLuint framebuffer);
+GLAPI void APIENTRY glFramebufferTexture2D (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
 GLAPI void APIENTRY glBindVertexArray (GLuint array);
 GLAPI void APIENTRY glDeleteVertexArrays (GLsizei n, const GLuint *arrays);
 GLAPI void APIENTRY glGenVertexArrays (GLsizei n, GLuint *arrays);
@@ -468,11 +482,12 @@ GL3W_API GL3WglProc imgl3wGetProcAddress(const char *proc);
 
 /* gl3w internal state */
 union ImGL3WProcs {
-    GL3WglProc ptr[59];
+    GL3WglProc ptr[62];
     struct {
         PFNGLACTIVETEXTUREPROC            ActiveTexture;
         PFNGLATTACHSHADERPROC             AttachShader;
         PFNGLBINDBUFFERPROC               BindBuffer;
+        PFNGLBINDFRAMEBUFFERPROC          BindFramebuffer;
         PFNGLBINDSAMPLERPROC              BindSampler;
         PFNGLBINDTEXTUREPROC              BindTexture;
         PFNGLBINDVERTEXARRAYPROC          BindVertexArray;
@@ -499,6 +514,7 @@ union ImGL3WProcs {
         PFNGLENABLEPROC                   Enable;
         PFNGLENABLEVERTEXATTRIBARRAYPROC  EnableVertexAttribArray;
         PFNGLFLUSHPROC                    Flush;
+        PFNGLFRAMEBUFFERTEXTURE2DPROC     FramebufferTexture2D;
         PFNGLGENBUFFERSPROC               GenBuffers;
         PFNGLGENTEXTURESPROC              GenTextures;
         PFNGLGENVERTEXARRAYSPROC          GenVertexArrays;
@@ -523,6 +539,7 @@ union ImGL3WProcs {
         PFNGLSCISSORPROC                  Scissor;
         PFNGLSHADERSOURCEPROC             ShaderSource;
         PFNGLTEXIMAGE2DPROC               TexImage2D;
+        PFNGLTEXPARAMETERFPROC            TexParameterf;
         PFNGLTEXPARAMETERIPROC            TexParameteri;
         PFNGLUNIFORM1IPROC                Uniform1i;
         PFNGLUNIFORMMATRIX4FVPROC         UniformMatrix4fv;
@@ -538,6 +555,7 @@ GL3W_API extern union ImGL3WProcs imgl3wProcs;
 #define glActiveTexture                   imgl3wProcs.gl.ActiveTexture
 #define glAttachShader                    imgl3wProcs.gl.AttachShader
 #define glBindBuffer                      imgl3wProcs.gl.BindBuffer
+#define glBindFramebuffer                 imgl3wProcs.gl.BindFramebuffer
 #define glBindSampler                     imgl3wProcs.gl.BindSampler
 #define glBindTexture                     imgl3wProcs.gl.BindTexture
 #define glBindVertexArray                 imgl3wProcs.gl.BindVertexArray
@@ -564,6 +582,7 @@ GL3W_API extern union ImGL3WProcs imgl3wProcs;
 #define glEnable                          imgl3wProcs.gl.Enable
 #define glEnableVertexAttribArray         imgl3wProcs.gl.EnableVertexAttribArray
 #define glFlush                           imgl3wProcs.gl.Flush
+#define glFramebufferTexture2D            imgl3wProcs.gl.FramebufferTexture2D
 #define glGenBuffers                      imgl3wProcs.gl.GenBuffers
 #define glGenTextures                     imgl3wProcs.gl.GenTextures
 #define glGenVertexArrays                 imgl3wProcs.gl.GenVertexArrays
@@ -588,6 +607,7 @@ GL3W_API extern union ImGL3WProcs imgl3wProcs;
 #define glScissor                         imgl3wProcs.gl.Scissor
 #define glShaderSource                    imgl3wProcs.gl.ShaderSource
 #define glTexImage2D                      imgl3wProcs.gl.TexImage2D
+#define glTexParameterf                   imgl3wProcs.gl.TexParameterf
 #define glTexParameteri                   imgl3wProcs.gl.TexParameteri
 #define glUniform1i                       imgl3wProcs.gl.Uniform1i
 #define glUniformMatrix4fv                imgl3wProcs.gl.UniformMatrix4fv
@@ -741,6 +761,7 @@ static const char *proc_names[] = {
     "glActiveTexture",
     "glAttachShader",
     "glBindBuffer",
+    "glBindFramebuffer",
     "glBindSampler",
     "glBindTexture",
     "glBindVertexArray",
@@ -767,6 +788,7 @@ static const char *proc_names[] = {
     "glEnable",
     "glEnableVertexAttribArray",
     "glFlush",
+    "glFramebufferTexture2D",
     "glGenBuffers",
     "glGenTextures",
     "glGenVertexArrays",
@@ -791,6 +813,7 @@ static const char *proc_names[] = {
     "glScissor",
     "glShaderSource",
     "glTexImage2D",
+    "glTexParameterf",
     "glTexParameteri",
     "glUniform1i",
     "glUniformMatrix4fv",

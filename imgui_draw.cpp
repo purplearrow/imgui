@@ -177,6 +177,10 @@ void ImGui::StyleColorsDark(ImGuiStyle* dst)
     ImVec4* colors = style->Colors;
 
     colors[ImGuiCol_Text]                   = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
+#ifdef USE_SPECTRUM_THEME
+    colors[ImGuiCol_TextHovered]            = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
+    colors[ImGuiCol_TextRevert]             = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);  // text on tree node when node is closed
+#endif
     colors[ImGuiCol_TextDisabled]           = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
     colors[ImGuiCol_WindowBg]               = ImVec4(0.06f, 0.06f, 0.06f, 0.94f);
     colors[ImGuiCol_ChildBg]                = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
@@ -186,6 +190,19 @@ void ImGui::StyleColorsDark(ImGuiStyle* dst)
     colors[ImGuiCol_FrameBg]                = ImVec4(0.16f, 0.29f, 0.48f, 0.54f);
     colors[ImGuiCol_FrameBgHovered]         = ImVec4(0.26f, 0.59f, 0.98f, 0.40f);
     colors[ImGuiCol_FrameBgActive]          = ImVec4(0.26f, 0.59f, 0.98f, 0.67f);
+#ifdef USE_SPECTRUM_THEME
+    colors[ImGuiCol_RadioButtonCenter]      = ImVec4(0.06f, 0.06f, 0.06f, 1.00f);  //ImGuiCol_WindowBg, alpha = 1
+    colors[ImGuiCol_RadioButtonBorder]      = ImVec4(0.16f, 0.35f, 0.59f, 1.00f);  //ImGuiCol_Header
+    colors[ImGuiCol_RadioButtonBorderHovered] = ImVec4(0.21f, 0.47f, 0.78f, 1.00f);
+    colors[ImGuiCol_RadioButtonActive]      = ImVec4(0.24f, 0.53f, 0.88f, 1.00f);  
+    colors[ImGuiCol_RadioButtonActiveHovered]=ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+    colors[ImGuiCol_CheckBoxMark]           = ImVec4(0.06f, 0.06f, 0.06f, 1.00f);  //ImGuiCol_RadioButtonCenter
+    colors[ImGuiCol_CheckBoxBg]             = ImVec4(0.24f, 0.53f, 0.88f, 1.00f);  //ImGuiCol_RadioButtonActive
+    colors[ImGuiCol_CheckBoxBgHovered]      = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);  //ImGuiCol_RadioButtonActiveHovered
+    colors[ImGuiCol_CheckBoxBorder]         = ImVec4(0.16f, 0.35f, 0.59f, 1.00f);  //ImGuiCol_RadioButtonBorder
+    colors[ImGuiCol_CheckBoxBorderHovered]  = ImVec4(0.21f, 0.47f, 0.78f, 1.00f);  //ImGuiCol_RadioButtonBorderHovered
+    colors[ImGuiCol_ComboChecked]           = ImVec4(0.24f, 0.53f, 0.88f, 1.00f);  //ImGuiCol_CheckBoxBg
+#endif
     colors[ImGuiCol_TitleBg]                = ImVec4(0.04f, 0.04f, 0.04f, 1.00f);
     colors[ImGuiCol_TitleBgActive]          = ImVec4(0.16f, 0.29f, 0.48f, 1.00f);
     colors[ImGuiCol_TitleBgCollapsed]       = ImVec4(0.00f, 0.00f, 0.00f, 0.51f);
@@ -239,6 +256,10 @@ void ImGui::StyleColorsClassic(ImGuiStyle* dst)
     ImVec4* colors = style->Colors;
 
     colors[ImGuiCol_Text]                   = ImVec4(0.90f, 0.90f, 0.90f, 1.00f);
+#ifdef USE_SPECTRUM_THEME
+    colors[ImGuiCol_TextHovered]            = ImVec4(0.90f, 0.90f, 0.90f, 1.00f);
+    colors[ImGuiCol_TextRevert]             = ImVec4(0.90f, 0.90f, 0.90f, 1.00f);  // text on tree node when node is closed
+#endif
     colors[ImGuiCol_TextDisabled]           = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
     colors[ImGuiCol_WindowBg]               = ImVec4(0.00f, 0.00f, 0.00f, 0.85f);
     colors[ImGuiCol_ChildBg]                = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
@@ -248,6 +269,19 @@ void ImGui::StyleColorsClassic(ImGuiStyle* dst)
     colors[ImGuiCol_FrameBg]                = ImVec4(0.43f, 0.43f, 0.43f, 0.39f);
     colors[ImGuiCol_FrameBgHovered]         = ImVec4(0.47f, 0.47f, 0.69f, 0.40f);
     colors[ImGuiCol_FrameBgActive]          = ImVec4(0.42f, 0.41f, 0.64f, 0.69f);
+#ifdef USE_SPECTRUM_THEME
+    colors[ImGuiCol_RadioButtonCenter]      = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);  //ImGuiCol_WindowBg, alpha = 1
+    colors[ImGuiCol_RadioButtonBorder]      = ImVec4(0.26f, 0.26f, 0.59f, 1.00f);  //ImGuiCol_Header
+    colors[ImGuiCol_RadioButtonBorderHovered] = ImVec4(0.35f, 0.35f, 0.78f, 1.00f);
+    colors[ImGuiCol_RadioButtonActive]      = ImVec4(0.35f, 0.35f, 0.78f, 1.00f);
+    colors[ImGuiCol_RadioButtonActiveHovered] = ImVec4(0.43f, 0.43f, 0.98f, 1.00f);
+    colors[ImGuiCol_CheckBoxMark]           = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);  //ImGuiCol_RadioButtonCenter
+    colors[ImGuiCol_CheckBoxBg]             = ImVec4(0.35f, 0.35f, 0.78f, 1.00f);  //ImGuiCol_RadioButtonActive
+    colors[ImGuiCol_CheckBoxBgHovered]      = ImVec4(0.43f, 0.43f, 0.98f, 1.00f);  //ImGuiCol_RadioButtonActiveHovered
+    colors[ImGuiCol_CheckBoxBorder]         = ImVec4(0.26f, 0.26f, 0.59f, 1.00f);  //ImGuiCol_RadioButtonBorder
+    colors[ImGuiCol_CheckBoxBorderHovered]  = ImVec4(0.35f, 0.35f, 0.78f, 1.00f);  //ImGuiCol_RadioButtonBorderHovered
+    colors[ImGuiCol_ComboChecked]           = ImVec4(0.35f, 0.35f, 0.78f, 1.00f);  //ImGuiCol_CheckBoxBg
+#endif
     colors[ImGuiCol_TitleBg]                = ImVec4(0.27f, 0.27f, 0.54f, 0.83f);
     colors[ImGuiCol_TitleBgActive]          = ImVec4(0.32f, 0.32f, 0.63f, 0.87f);
     colors[ImGuiCol_TitleBgCollapsed]       = ImVec4(0.40f, 0.40f, 0.80f, 0.20f);
@@ -302,6 +336,10 @@ void ImGui::StyleColorsLight(ImGuiStyle* dst)
     ImVec4* colors = style->Colors;
 
     colors[ImGuiCol_Text]                   = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+#ifdef USE_SPECTRUM_THEME
+    colors[ImGuiCol_TextHovered]            = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+    colors[ImGuiCol_TextRevert]             = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);  // text on tree node when node is closed
+#endif
     colors[ImGuiCol_TextDisabled]           = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
     colors[ImGuiCol_WindowBg]               = ImVec4(0.94f, 0.94f, 0.94f, 1.00f);
     colors[ImGuiCol_ChildBg]                = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
@@ -311,6 +349,19 @@ void ImGui::StyleColorsLight(ImGuiStyle* dst)
     colors[ImGuiCol_FrameBg]                = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
     colors[ImGuiCol_FrameBgHovered]         = ImVec4(0.26f, 0.59f, 0.98f, 0.40f);
     colors[ImGuiCol_FrameBgActive]          = ImVec4(0.26f, 0.59f, 0.98f, 0.67f);
+#ifdef USE_SPECTRUM_THEME
+    colors[ImGuiCol_RadioButtonCenter]      = ImVec4(0.94f, 0.94f, 0.94f, 1.00f);  //ImGuiCol_WindowBg, alpha = 1
+    colors[ImGuiCol_RadioButtonBorder]      = ImVec4(0.16f, 0.36f, 0.59f, 1.00f);  //ImGuiCol_Header
+    colors[ImGuiCol_RadioButtonBorderHovered] = ImVec4(0.21f, 0.47f, 0.78f, 1.00f);
+    colors[ImGuiCol_RadioButtonActive]      = ImVec4(0.21f, 0.47f, 0.78f, 1.00f);
+    colors[ImGuiCol_RadioButtonActiveHovered] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+    colors[ImGuiCol_CheckBoxMark]           = ImVec4(0.94f, 0.94f, 0.94f, 1.00f);  //ImGuiCol_RadioButtonCenter
+    colors[ImGuiCol_CheckBoxBg]             = ImVec4(0.21f, 0.47f, 0.78f, 1.00f);  //ImGuiCol_RadioButtonActive
+    colors[ImGuiCol_CheckBoxBgHovered]      = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);  //ImGuiCol_RadioButtonActiveHovered
+    colors[ImGuiCol_CheckBoxBorder]         = ImVec4(0.16f, 0.36f, 0.59f, 1.00f);  //ImGuiCol_RadioButtonBorder
+    colors[ImGuiCol_CheckBoxBorderHovered]  = ImVec4(0.21f, 0.47f, 0.78f, 1.00f);  //ImGuiCol_RadioButtonBorderHovered
+    colors[ImGuiCol_ComboChecked]           = ImVec4(0.21f, 0.47f, 0.78f, 1.00f);  //ImGuiCol_CheckBoxBg
+#endif
     colors[ImGuiCol_TitleBg]                = ImVec4(0.96f, 0.96f, 0.96f, 1.00f);
     colors[ImGuiCol_TitleBgActive]          = ImVec4(0.82f, 0.82f, 0.82f, 1.00f);
     colors[ImGuiCol_TitleBgCollapsed]       = ImVec4(1.00f, 1.00f, 1.00f, 0.51f);

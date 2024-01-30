@@ -29,6 +29,7 @@
 #define IMGUI_HAS_VIEWPORT          // Viewport WIP branch
 #define IMGUI_HAS_DOCK              // Docking WIP branch
 
+#define USE_SPECTRUM_THEME
 /*
 
 Index of this file:
@@ -58,6 +59,7 @@ Index of this file:
 #include IMGUI_USER_CONFIG
 #endif
 #include "imconfig.h"
+#include "imgui_spectrum.h"
 
 #ifndef IMGUI_DISABLE
 
@@ -1557,6 +1559,10 @@ enum ImGuiBackendFlags_
 enum ImGuiCol_
 {
     ImGuiCol_Text,
+#ifdef USE_SPECTRUM_THEME
+    ImGuiCol_TextHovered,
+    ImGuiCol_TextRevert,
+#endif
     ImGuiCol_TextDisabled,
     ImGuiCol_WindowBg,              // Background of normal windows
     ImGuiCol_ChildBg,               // Background of child windows
@@ -1566,6 +1572,19 @@ enum ImGuiCol_
     ImGuiCol_FrameBg,               // Background of checkbox, radio button, plot, slider, text input
     ImGuiCol_FrameBgHovered,
     ImGuiCol_FrameBgActive,
+#ifdef USE_SPECTRUM_THEME
+    ImGuiCol_RadioButtonCenter,         //center part of radio button (not active)
+    ImGuiCol_RadioButtonBorder,         //border of radio button (not active)
+    ImGuiCol_RadioButtonBorderHovered,  //border of radio button (not active, but hovered)
+    ImGuiCol_RadioButtonActive,         //solid circle of radio button when active
+    ImGuiCol_RadioButtonActiveHovered,  //solid circle of radio button when active and hovered
+    ImGuiCol_CheckBoxMark,              // V in the check box
+    ImGuiCol_CheckBoxBg,                //background of check box
+    ImGuiCol_CheckBoxBgHovered,         //background of check box when hovered
+    ImGuiCol_CheckBoxBorder,            //border of check box when un-checked
+    ImGuiCol_CheckBoxBorderHovered,     //border of check box when un-checked and hovered
+    ImGuiCol_ComboChecked,              //text color of checked combo item
+#endif
     ImGuiCol_TitleBg,               // Title bar
     ImGuiCol_TitleBgActive,         // Title bar when focused
     ImGuiCol_TitleBgCollapsed,      // Title bar when collapsed

@@ -39,6 +39,7 @@ Index of this file:
 #endif
 
 #include "imgui.h"
+#include "imgui_spectrum.h"
 #ifndef IMGUI_DISABLE
 #include "imgui_internal.h"
 
@@ -1131,6 +1132,40 @@ bool ImGui::Checkbox(const char* label, bool* v)
 
     const ImRect check_bb(pos, pos + ImVec2(square_sz, square_sz));
     RenderNavHighlight(total_bb, id);
+
+    // ImGui-Spectrum changes start here
+    const ImVec2 offset(style.FramePadding.y, style.FramePadding.y);
+    const ImRect check2_bb(check_bb.Min + offset, check_bb.Max - offset);
+#ifdef USE_SPECTRUM_THEME
+    const float check_sz = ImMin(check2_bb.GetWidth(), check2_bb.GetHeight());
+    const float pad = ImMax(1.0f, (float)(int)(check_sz / 3.0f));
+
+    bool mixed_value = (g.LastItemData.InFlags & ImGuiItemFlags_MixedValue) != 0;
+    if (mixed_value)
+    {
+        // Undocumented tristate/mixed/indeterminate checkbox (#2644)
+        // This may seem awkwardly designed because the aim is to make ImGuiItemFlags_MixedValue supported by all widgets (not just checkbox)
+        // (same frame as the checked state)
+        ImU32 frame_col = GetColorU32(hovered ? ImGuiCol_CheckBoxBgHovered : ImGuiCol_CheckBoxBg);
+        RenderFrame(check2_bb.Min, check2_bb.Max, frame_col, false, Spectrum::CHECKBOX_ROUNDING);
+        const ImVec2 line_size = ImVec2(check2_bb.GetWidth() / 2 - style.ItemInnerSpacing.x, 1.5f);
+        RenderFrame(check2_bb.GetCenter() - line_size, check2_bb.GetCenter() + line_size, GetColorU32(ImGuiCol_CheckBoxMark), false, 2.0f);
+    }
+    else if (*v)
+    {
+        ImU32 frame_col = GetColorU32(hovered ? ImGuiCol_CheckBoxBgHovered : ImGuiCol_CheckBoxBg);
+        RenderFrame(check2_bb.Min, check2_bb.Max, frame_col, false, Spectrum::CHECKBOX_ROUNDING);
+        RenderCheckMark(window->DrawList, check_bb.Min + ImVec2(pad, pad), GetColorU32(ImGuiCol_CheckBoxMark), square_sz - pad * 2.0f);
+    }
+    else {
+        ImU32 border_col = GetColorU32(hovered ? ImGuiCol_CheckBoxBorderHovered : ImGuiCol_CheckBoxBorder);
+        PushStyleVar(ImGuiStyleVar_FrameBorderSize, Spectrum::CHECKBOX_BORDER_SIZE);
+        PushStyleColor(ImGuiCol_Border, border_col);
+        RenderFrameBorder(check2_bb.Min, check2_bb.Max, Spectrum::CHECKBOX_ROUNDING);
+        PopStyleVar();
+        PopStyleColor();
+    }
+#else
     RenderFrame(check_bb.Min, check_bb.Max, GetColorU32((held && hovered) ? ImGuiCol_FrameBgActive : hovered ? ImGuiCol_FrameBgHovered : ImGuiCol_FrameBg), true, style.FrameRounding);
     ImU32 check_col = GetColorU32(ImGuiCol_CheckMark);
     bool mixed_value = (g.LastItemData.InFlags & ImGuiItemFlags_MixedValue) != 0;
@@ -1146,12 +1181,18 @@ bool ImGui::Checkbox(const char* label, bool* v)
         const float pad = ImMax(1.0f, IM_TRUNC(square_sz / 6.0f));
         RenderCheckMark(window->DrawList, check_bb.Min + ImVec2(pad, pad), check_col, square_sz - pad * 2.0f);
     }
-
+#endif
     ImVec2 label_pos = ImVec2(check_bb.Max.x + style.ItemInnerSpacing.x, check_bb.Min.y + style.FramePadding.y);
     if (g.LogEnabled)
         LogRenderedText(&label_pos, mixed_value ? "[~]" : *v ? "[x]" : "[ ]");
-    if (label_size.x > 0.0f)
+    if (label_size.x > 0.0f) {
+#ifdef USE_SPECTRUM_THEME
+        RenderText(label_pos, label, nullptr, true, hovered ? GetColorU32(ImGuiCol_TextHovered) : GetColorU32(ImGuiCol_Text));
+#else
         RenderText(label_pos, label);
+#endif
+    }
+
 
     IMGUI_TEST_ENGINE_ITEM_INFO(id, label, g.LastItemData.StatusFlags | ImGuiItemStatusFlags_Checkable | (*v ? ImGuiItemStatusFlags_Checked : 0));
     return pressed;
@@ -1235,6 +1276,18 @@ bool ImGui::RadioButton(const char* label, bool active)
 
     RenderNavHighlight(total_bb, id);
     const int num_segment = window->DrawList->_CalcCircleAutoSegmentCount(radius);
+#ifdef USE_SPECTRUM_THEME
+    if (active)
+    {
+        window->DrawList->AddCircleFilled(center, radius * 0.8f, hovered ? GetColorU32(ImGuiCol_RadioButtonActiveHovered) : GetColorU32(ImGuiCol_RadioButtonActive), num_segment);
+        //window->DrawList->AddCircleFilled(center, radius * 0.25f, GetColorU32(ImGuiCol_RadioButtonCenter), num_segment);  //solid circle looks good, so I mark this line
+    }
+    else 
+    {
+        window->DrawList->AddCircleFilled(center, radius * 0.8f, hovered ? GetColorU32(ImGuiCol_RadioButtonBorderHovered) : GetColorU32(ImGuiCol_RadioButtonBorder), num_segment);
+        window->DrawList->AddCircleFilled(center, radius * 0.6f, GetColorU32(ImGuiCol_RadioButtonCenter), num_segment);
+    }
+#else
     window->DrawList->AddCircleFilled(center, radius, GetColorU32((held && hovered) ? ImGuiCol_FrameBgActive : hovered ? ImGuiCol_FrameBgHovered : ImGuiCol_FrameBg), num_segment);
     if (active)
     {
@@ -1247,12 +1300,18 @@ bool ImGui::RadioButton(const char* label, bool active)
         window->DrawList->AddCircle(center + ImVec2(1, 1), radius, GetColorU32(ImGuiCol_BorderShadow), num_segment, style.FrameBorderSize);
         window->DrawList->AddCircle(center, radius, GetColorU32(ImGuiCol_Border), num_segment, style.FrameBorderSize);
     }
+#endif
 
     ImVec2 label_pos = ImVec2(check_bb.Max.x + style.ItemInnerSpacing.x, check_bb.Min.y + style.FramePadding.y);
     if (g.LogEnabled)
         LogRenderedText(&label_pos, active ? "(x)" : "( )");
-    if (label_size.x > 0.0f)
+    if (label_size.x > 0.0f) {
+#ifdef USE_SPECTRUM_THEME
+        RenderText(label_pos, label, nullptr, true, hovered ? GetColorU32(ImGuiCol_TextHovered) : GetColorU32(ImGuiCol_Text));
+#else
         RenderText(label_pos, label);
+#endif
+    }
 
     IMGUI_TEST_ENGINE_ITEM_INFO(id, label, g.LastItemData.StatusFlags);
     return pressed;
@@ -1798,15 +1857,26 @@ bool ImGui::BeginComboPopup(ImGuiID popup_id, const ImRect& bb, ImGuiComboFlags 
 
     // We don't use BeginPopupEx() solely because we have a custom name string, which we could make an argument to BeginPopupEx()
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_Popup | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoMove;
+#ifdef USE_SPECTRUM_THEME
+    PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(g.Style.FramePadding.x, g.Style.WindowPadding.y));  // Horizontally align ourselves with the framed text
+    PushStyleVar(ImGuiStyleVar_PopupRounding, 4.0f);   //spectrum, make corner of popup round
+    bool ret = Begin(name, NULL, window_flags);
+    PopStyleVar();
+    PopStyleVar();
+#else
     PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(g.Style.FramePadding.x, g.Style.WindowPadding.y)); // Horizontally align ourselves with the framed text
     bool ret = Begin(name, NULL, window_flags);
     PopStyleVar();
+#endif
     if (!ret)
     {
         EndPopup();
         IM_ASSERT(0);   // This should never happen as we tested for IsPopupOpen() above
         return false;
     }
+#ifdef USE_SPECTRUM_THEME
+    GetCurrentWindow()->DC.IsComboPopup = true;
+#endif
     return true;
 }
 
@@ -6333,14 +6403,27 @@ bool ImGui::TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char* l
 
         if (g.LogEnabled)
             LogSetNextTextDecoration("###", "###");
+#ifdef USE_SPECTRUM_THEME
+        //change the color of text of TreeNode  (when node is closed)
+        RenderTextClipped(text_pos, frame_bb.Max, label, label_end, &label_size, ImVec2(0, 0), nullptr, GetColorU32(ImGuiCol_TextRevert));
+#else
+        RenderTextClipped(text_pos, frame_bb.Max, label, label_end, &label_size);
+#endif
     }
     else
     {
         // Unframed typed for tree nodes
         if (hovered || selected)
         {
+#ifdef USE_SPECTRUM_THEME
+            //change hover color of tree node (when node is opened)
+            const ImU32 bg_col = GetColorU32((held && hovered) ? ImGuiCol_HeaderActive : hovered ? ImGuiCol_HeaderHovered : ImGuiCol_Header, 0.15f);
+            RenderFrame(frame_bb.Min, frame_bb.Max, bg_col, false);
+            window->DrawList->AddRect(frame_bb.Min, frame_bb.Max, bg_col);
+#else
             const ImU32 bg_col = GetColorU32((held && hovered) ? ImGuiCol_HeaderActive : hovered ? ImGuiCol_HeaderHovered : ImGuiCol_Header);
             RenderFrame(frame_bb.Min, frame_bb.Max, bg_col, false);
+#endif
         }
         RenderNavHighlight(frame_bb, id, nav_highlight_flags);
         if (flags & ImGuiTreeNodeFlags_Bullet)
@@ -6612,9 +6695,31 @@ bool ImGui::Selectable(const char* label, bool selected, ImGuiSelectableFlags fl
         g.LastItemData.StatusFlags |= ImGuiItemStatusFlags_ToggledSelection;
 
     // Render
+#ifdef USE_SPECTRUM_THEME
+    if (window->DC.IsComboPopup) { // ImGui-Spectrum: change Selectable rendering for ComboBox and ListBox
+        if (hovered) {
+            //RenderFrame(bb.Min, bb.Max, Spectrum::color_alpha(0x0A, Spectrum::Static::GRAY900), false, 0.0f);
+            RenderFrame(bb.Min, bb.Max, GetColorU32(ImGuiCol_HeaderHovered, 0.25f), false, 0.0f);  //change to this
+            RenderNavHighlight(bb, id, ImGuiNavHighlightFlags_TypeThin | ImGuiNavHighlightFlags_NoRounding);
+        }
+
+        if (selected) { // add a checkmark and text is blue
+            float height = bb.GetHeight();
+            RenderCheckMark(window->DrawList, ImVec2(bb.Max.x - height, bb.GetCenter().y - height / 2),
+                GetColorU32(ImGuiCol_ComboChecked), height / 3.0f * 2.0f);
+            PushStyleColor(ImGuiCol_Text, GetColorU32(ImGuiCol_ComboChecked));
+        }
+    }
+    else
+#endif
     if (hovered || selected)
     {
+#ifdef USE_SPECTRUM_THEME
+        //make highlight color of selectable more transparent
+        const ImU32 col = GetColorU32((held && hovered) ? ImGuiCol_HeaderActive : hovered ? ImGuiCol_HeaderHovered : ImGuiCol_Header, 0.25f);
+#else
         const ImU32 col = GetColorU32((held && hovered) ? ImGuiCol_HeaderActive : hovered ? ImGuiCol_HeaderHovered : ImGuiCol_Header);
+#endif
         RenderFrame(bb.Min, bb.Max, col, false, 0.0f);
     }
     if (g.NavId == id)
@@ -6629,7 +6734,10 @@ bool ImGui::Selectable(const char* label, bool selected, ImGuiSelectableFlags fl
     }
 
     RenderTextClipped(text_min, text_max, label, NULL, &label_size, style.SelectableTextAlign, &bb);
-
+#ifdef USE_SPECTRUM_THEME
+    if (window->DC.IsComboPopup && selected)
+        PopStyleColor(); // ImGui-Spectrum: undo blue color from above
+#endif
     // Automatically close popups
     if (pressed && (window->Flags & ImGuiWindowFlags_Popup) && !(flags & ImGuiSelectableFlags_DontClosePopups) && !(g.LastItemData.InFlags & ImGuiItemFlags_SelectableDontClosePopup))
         CloseCurrentPopup();
@@ -6905,6 +7013,9 @@ bool ImGui::BeginListBox(const char* label, const ImVec2& size_arg)
     }
 
     BeginChild(id, frame_bb.GetSize(), ImGuiChildFlags_FrameStyle);
+#ifdef USE_SPECTRUM_THEME
+    GetCurrentWindow()->DC.IsComboPopup = true;
+#endif
     return true;
 }
 
@@ -9033,8 +9144,11 @@ void ImGui::TabItemLabelAndCloseButton(ImDrawList* draw_list, const ImRect& bb, 
         text_ellipsis_clip_bb.Max.x -= unsaved_marker_visible ? (button_sz * 0.80f) : 0.0f;
         ellipsis_max_x = text_pixel_clip_bb.Max.x;
     }
+#ifdef USE_SPECTRUM_THEME
+    RenderTextEllipsis(draw_list, text_ellipsis_clip_bb.Min, text_ellipsis_clip_bb.Max, text_pixel_clip_bb.Max.x, ellipsis_max_x, label, NULL, &label_size, GetColorU32(ImGuiCol_TextRevert));
+#else
     RenderTextEllipsis(draw_list, text_ellipsis_clip_bb.Min, text_ellipsis_clip_bb.Max, text_pixel_clip_bb.Max.x, ellipsis_max_x, label, NULL, &label_size);
-
+#endif
 #if 0
     if (!is_contents_visible)
         g.Style.Alpha = backup_alpha;
