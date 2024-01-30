@@ -3257,6 +3257,10 @@ const char* ImGui::GetStyleColorName(ImGuiCol idx)
     switch (idx)
     {
     case ImGuiCol_Text: return "Text";
+#ifdef USE_SPECTRUM_THEME
+    case ImGuiCol_TextHovered: return "TextHovered";
+    case ImGuiCol_TextRevert: return "TextRevert";
+#endif
     case ImGuiCol_TextDisabled: return "TextDisabled";
     case ImGuiCol_WindowBg: return "WindowBg";
     case ImGuiCol_ChildBg: return "ChildBg";
@@ -3266,6 +3270,19 @@ const char* ImGui::GetStyleColorName(ImGuiCol idx)
     case ImGuiCol_FrameBg: return "FrameBg";
     case ImGuiCol_FrameBgHovered: return "FrameBgHovered";
     case ImGuiCol_FrameBgActive: return "FrameBgActive";
+#ifdef USE_SPECTRUM_THEME
+    case ImGuiCol_RadioButtonCenter: return "RadioBtnCenter";
+    case ImGuiCol_RadioButtonBorder: return "RadioBtnBorder";
+    case ImGuiCol_RadioButtonBorderHovered: return "RadioBtnBorderHovered";
+    case ImGuiCol_RadioButtonActive: return "RadioBtnActive";
+    case ImGuiCol_RadioButtonActiveHovered: return "RadioButtonActiveHovered";
+    case ImGuiCol_CheckBoxMark: return "CheckBoxMark";
+    case ImGuiCol_CheckBoxBg: return "CheckBoxBg";
+    case ImGuiCol_CheckBoxBgHovered: return "CheckBoxBgHovered";
+    case ImGuiCol_CheckBoxBorder: return "CheckBoxBorder";
+    case ImGuiCol_CheckBoxBorderHovered: return "CheckBoxBorderHovered";
+    case ImGuiCol_ComboChecked: return "ComboChecked";
+#endif
     case ImGuiCol_TitleBg: return "TitleBg";
     case ImGuiCol_TitleBgActive: return "TitleBgActive";
     case ImGuiCol_TitleBgCollapsed: return "TitleBgCollapsed";
@@ -3337,7 +3354,11 @@ const char* ImGui::FindRenderedTextEnd(const char* text, const char* text_end)
 
 // Internal ImGui functions to render text
 // RenderText***() functions calls ImDrawList::AddText() calls ImBitmapFont::RenderText()
+#ifdef USE_SPECTRUM_THEME
+void ImGui::RenderText(ImVec2 pos, const char* text, const char* text_end, bool hide_text_after_hash, ImU32 color)
+#else
 void ImGui::RenderText(ImVec2 pos, const char* text, const char* text_end, bool hide_text_after_hash)
+#endif
 {
     ImGuiContext& g = *GImGui;
     ImGuiWindow* window = g.CurrentWindow;
@@ -3357,13 +3378,20 @@ void ImGui::RenderText(ImVec2 pos, const char* text, const char* text_end, bool 
 
     if (text != text_display_end)
     {
+#ifdef USE_SPECTRUM_THEME
+        window->DrawList->AddText(g.Font, g.FontSize, pos, (color == 0 ? GetColorU32(ImGuiCol_Text) : color), text, text_display_end);
+#else
         window->DrawList->AddText(g.Font, g.FontSize, pos, GetColorU32(ImGuiCol_Text), text, text_display_end);
+#endif
         if (g.LogEnabled)
             LogRenderedText(&pos, text, text_display_end);
     }
 }
-
+#ifdef USE_SPECTRUM_THEME
+void ImGui::RenderTextWrapped(ImVec2 pos, const char* text, const char* text_end, float wrap_width, ImU32 color)
+#else
 void ImGui::RenderTextWrapped(ImVec2 pos, const char* text, const char* text_end, float wrap_width)
+#endif
 {
     ImGuiContext& g = *GImGui;
     ImGuiWindow* window = g.CurrentWindow;
@@ -3373,7 +3401,11 @@ void ImGui::RenderTextWrapped(ImVec2 pos, const char* text, const char* text_end
 
     if (text != text_end)
     {
+#ifdef USE_SPECTRUM_THEME
+        window->DrawList->AddText(g.Font, g.FontSize, pos, (color == 0 ? GetColorU32(ImGuiCol_Text) : color), text, text_end, wrap_width);
+#else
         window->DrawList->AddText(g.Font, g.FontSize, pos, GetColorU32(ImGuiCol_Text), text, text_end, wrap_width);
+#endif
         if (g.LogEnabled)
             LogRenderedText(&pos, text, text_end);
     }
@@ -3384,7 +3416,11 @@ void ImGui::RenderTextWrapped(ImVec2 pos, const char* text, const char* text_end
 // FIXME-OPT: Since we have or calculate text_size we could coarse clip whole block immediately, especally for text above draw_list->DrawList.
 // Effectively as this is called from widget doing their own coarse clipping it's not very valuable presently. Next time function will take
 // better advantage of the render function taking size into account for coarse clipping.
-void ImGui::RenderTextClippedEx(ImDrawList* draw_list, const ImVec2& pos_min, const ImVec2& pos_max, const char* text, const char* text_display_end, const ImVec2* text_size_if_known, const ImVec2& align, const ImRect* clip_rect)
+#ifdef USE_SPECTRUM_THEME
+void ImGui::RenderTextClippedEx(ImDrawList* draw_list, const ImVec2& pos_min, const ImVec2& pos_max, const char* text, const char* text_display_end, const ImVec2* text_size_if_known, const ImVec2& align, const ImRect* clip_rect, ImU32 color)
+#else
+void ImGui::RenderTextClippedEx(ImDrawList* draw_list, const ImVec2& pos_min, const ImVec2& pos_max, const char* text, const char* text_display_end, const ImVec2* text_size_if_known, const ImVec2& align, const ImRect* clip_rect, ImU32 color)
+#endif
 {
     // Perform CPU side clipping for single clipped element to avoid using scissor state
     ImVec2 pos = pos_min;
@@ -3404,15 +3440,26 @@ void ImGui::RenderTextClippedEx(ImDrawList* draw_list, const ImVec2& pos_min, co
     if (need_clipping)
     {
         ImVec4 fine_clip_rect(clip_min->x, clip_min->y, clip_max->x, clip_max->y);
+#ifdef USE_SPECTRUM_THEME
+        draw_list->AddText(NULL, 0.0f, pos, (color != 0 ? color : GetColorU32(ImGuiCol_Text)), text, text_display_end, 0.0f, &fine_clip_rect);
+#else
         draw_list->AddText(NULL, 0.0f, pos, GetColorU32(ImGuiCol_Text), text, text_display_end, 0.0f, &fine_clip_rect);
+#endif
     }
     else
     {
+#ifdef USE_SPECTRUM_THEME
+        draw_list->AddText(NULL, 0.0f, pos, (color != 0 ? color : GetColorU32(ImGuiCol_Text)), text, text_display_end, 0.0f, NULL);
+#else
         draw_list->AddText(NULL, 0.0f, pos, GetColorU32(ImGuiCol_Text), text, text_display_end, 0.0f, NULL);
+#endif
     }
 }
-
+#ifdef USE_SPECTRUM_THEME
+void ImGui::RenderTextClipped(const ImVec2& pos_min, const ImVec2& pos_max, const char* text, const char* text_end, const ImVec2* text_size_if_known, const ImVec2& align, const ImRect* clip_rect, ImU32 color)
+#else
 void ImGui::RenderTextClipped(const ImVec2& pos_min, const ImVec2& pos_max, const char* text, const char* text_end, const ImVec2* text_size_if_known, const ImVec2& align, const ImRect* clip_rect)
+#endif
 {
     // Hide anything after a '##' string
     const char* text_display_end = FindRenderedTextEnd(text, text_end);
@@ -3422,7 +3469,11 @@ void ImGui::RenderTextClipped(const ImVec2& pos_min, const ImVec2& pos_max, cons
 
     ImGuiContext& g = *GImGui;
     ImGuiWindow* window = g.CurrentWindow;
+#ifdef USE_SPECTRUM_THEME
+    RenderTextClippedEx(window->DrawList, pos_min, pos_max, text, text_display_end, text_size_if_known, align, clip_rect, color);
+#else
     RenderTextClippedEx(window->DrawList, pos_min, pos_max, text, text_display_end, text_size_if_known, align, clip_rect);
+#endif
     if (g.LogEnabled)
         LogRenderedText(&pos_min, text, text_display_end);
 }
@@ -3430,7 +3481,11 @@ void ImGui::RenderTextClipped(const ImVec2& pos_min, const ImVec2& pos_max, cons
 // Another overly complex function until we reorganize everything into a nice all-in-one helper.
 // This is made more complex because we have dissociated the layout rectangle (pos_min..pos_max) which define _where_ the ellipsis is, from actual clipping of text and limit of the ellipsis display.
 // This is because in the context of tabs we selectively hide part of the text when the Close Button appears, but we don't want the ellipsis to move.
+#ifdef USE_SPECTRUM_THEME
+void ImGui::RenderTextEllipsis(ImDrawList* draw_list, const ImVec2& pos_min, const ImVec2& pos_max, float clip_max_x, float ellipsis_max_x, const char* text, const char* text_end_full, const ImVec2* text_size_if_known, ImU32 color)
+#else
 void ImGui::RenderTextEllipsis(ImDrawList* draw_list, const ImVec2& pos_min, const ImVec2& pos_max, float clip_max_x, float ellipsis_max_x, const char* text, const char* text_end_full, const ImVec2* text_size_if_known)
+#endif
 {
     ImGuiContext& g = *GImGui;
     if (text_end_full == NULL)
@@ -3471,7 +3526,11 @@ void ImGui::RenderTextEllipsis(ImDrawList* draw_list, const ImVec2& pos_min, con
         }
 
         // Render text, render ellipsis
+#ifdef USE_SPECTRUM_THEME
+        RenderTextClippedEx(draw_list, pos_min, ImVec2(clip_max_x, pos_max.y), text, text_end_ellipsis, &text_size, ImVec2(0.0f, 0.0f), nullptr, color);
+#else
         RenderTextClippedEx(draw_list, pos_min, ImVec2(clip_max_x, pos_max.y), text, text_end_ellipsis, &text_size, ImVec2(0.0f, 0.0f));
+#endif
         ImVec2 ellipsis_pos = ImFloor(ImVec2(pos_min.x + text_size_clipped_x, pos_min.y));
         if (ellipsis_pos.x + ellipsis_width <= ellipsis_max_x)
             for (int i = 0; i < font->EllipsisCharCount; i++, ellipsis_pos.x += font->EllipsisCharStep * font_scale)
@@ -3479,7 +3538,11 @@ void ImGui::RenderTextEllipsis(ImDrawList* draw_list, const ImVec2& pos_min, con
     }
     else
     {
+#ifdef USE_SPECTRUM_THEME
+        RenderTextClippedEx(draw_list, pos_min, ImVec2(clip_max_x, pos_max.y), text, text_end_full, &text_size, ImVec2(0.0f, 0.0f), nullptr, color);
+#else
         RenderTextClippedEx(draw_list, pos_min, ImVec2(clip_max_x, pos_max.y), text, text_end_full, &text_size, ImVec2(0.0f, 0.0f));
+#endif
     }
 
     if (g.LogEnabled)
@@ -5208,9 +5271,8 @@ static void ImGui::RenderDimmedBackgrounds()
     }
 
     // Draw dimming background on _other_ viewports than the ones our windows are in
-    for (int viewport_n = 0; viewport_n < g.Viewports.Size; viewport_n++)
+    for (ImGuiViewportP* viewport : g.Viewports)
     {
-        ImGuiViewportP* viewport = g.Viewports[viewport_n];
         if (viewport == viewports_already_dimmed[0] || viewport == viewports_already_dimmed[1])
             continue;
         if (modal_window && viewport->Window && IsWindowAbove(viewport->Window, modal_window))
@@ -9860,9 +9922,8 @@ static void ImGui::ErrorCheckNewFrameSanityChecks()
         }
 
         // Perform simple checks on platform monitor data + compute a total bounding box for quick early outs
-        for (int monitor_n = 0; monitor_n < g.PlatformIO.Monitors.Size; monitor_n++)
+        for (ImGuiPlatformMonitor& mon : g.PlatformIO.Monitors)
         {
-            ImGuiPlatformMonitor& mon = g.PlatformIO.Monitors[monitor_n];
             IM_UNUSED(mon);
             IM_ASSERT(mon.MainSize.x > 0.0f && mon.MainSize.y > 0.0f && "Monitor main bounds not setup properly.");
             IM_ASSERT(ImRect(mon.MainPos, mon.MainPos + mon.MainSize).Contains(ImRect(mon.WorkPos, mon.WorkPos + mon.WorkSize)) && "Monitor work bounds not setup properly. If you don't have work area information, just copy MainPos/MainSize into them.");
@@ -10909,8 +10970,8 @@ bool ImGui::IsPopupOpen(ImGuiID id, ImGuiPopupFlags popup_flags)
         if (popup_flags & ImGuiPopupFlags_AnyPopupLevel)
         {
             // Return true if the popup is open anywhere in the popup stack
-            for (int n = 0; n < g.OpenPopupStack.Size; n++)
-                if (g.OpenPopupStack[n].PopupId == id)
+            for (ImGuiPopupData& popup_data : g.OpenPopupStack)
+                if (popup_data.PopupId == id)
                     return true;
             return false;
         }
@@ -13989,18 +14050,18 @@ ImGuiViewport* ImGui::GetMainViewport()
 ImGuiViewport* ImGui::FindViewportByID(ImGuiID id)
 {
     ImGuiContext& g = *GImGui;
-    for (int n = 0; n < g.Viewports.Size; n++)
-        if (g.Viewports[n]->ID == id)
-            return g.Viewports[n];
+    for (ImGuiViewportP* viewport : g.Viewports)
+        if (viewport->ID == id)
+            return viewport;
     return NULL;
 }
 
 ImGuiViewport* ImGui::FindViewportByPlatformHandle(void* platform_handle)
 {
     ImGuiContext& g = *GImGui;
-    for (int i = 0; i != g.Viewports.Size; i++)
-        if (g.Viewports[i]->PlatformHandle == platform_handle)
-            return g.Viewports[i];
+    for (ImGuiViewportP* viewport : g.Viewports)
+        if (viewport->PlatformHandle == platform_handle)
+            return viewport;
     return NULL;
 }
 
@@ -14062,9 +14123,8 @@ static bool ImGui::UpdateTryMergeWindowIntoHostViewport(ImGuiWindow* window, ImG
         return false;
 
     // FIXME: Can't use g.WindowsFocusOrder[] for root windows only as we care about Z order. If we maintained a DisplayOrder along with FocusOrder we could..
-    for (int n = 0; n < g.Windows.Size; n++)
+    for (ImGuiWindow* window_behind : g.Windows)
     {
-        ImGuiWindow* window_behind = g.Windows[n];
         if (window_behind == window)
             break;
         if (window_behind->WasActive && window_behind->ViewportOwned && !(window_behind->Flags & ImGuiWindowFlags_ChildWindow))
@@ -14106,9 +14166,9 @@ void ImGui::TranslateWindowsInViewport(ImGuiViewportP* viewport, const ImVec2& o
     const bool translate_all_windows = (g.ConfigFlagsCurrFrame & ImGuiConfigFlags_ViewportsEnable) != (g.ConfigFlagsLastFrame & ImGuiConfigFlags_ViewportsEnable);
     ImRect test_still_fit_rect(old_pos, old_pos + viewport->Size);
     ImVec2 delta_pos = new_pos - old_pos;
-    for (int window_n = 0; window_n < g.Windows.Size; window_n++) // FIXME-OPT
-        if (translate_all_windows || (g.Windows[window_n]->Viewport == viewport && test_still_fit_rect.Contains(g.Windows[window_n]->Rect())))
-            TranslateWindow(g.Windows[window_n], delta_pos);
+    for (ImGuiWindow* window : g.Windows) // FIXME-OPT
+        if (translate_all_windows || (window->Viewport == viewport && test_still_fit_rect.Contains(window->Rect())))
+            TranslateWindow(window, delta_pos);
 }
 
 // Scale all windows (position, size). Use when e.g. changing DPI. (This is a lossy operation!)
@@ -14121,9 +14181,9 @@ void ImGui::ScaleWindowsInViewport(ImGuiViewportP* viewport, float scale)
     }
     else
     {
-        for (int i = 0; i != g.Windows.Size; i++)
-            if (g.Windows[i]->Viewport == viewport)
-                ScaleWindow(g.Windows[i], scale);
+        for (ImGuiWindow* window : g.Windows)
+            if (window->Viewport == viewport)
+                ScaleWindow(window, scale);
     }
 }
 
@@ -14134,13 +14194,10 @@ ImGuiViewportP* ImGui::FindHoveredViewportFromPlatformWindowStack(const ImVec2& 
 {
     ImGuiContext& g = *GImGui;
     ImGuiViewportP* best_candidate = NULL;
-    for (int n = 0; n < g.Viewports.Size; n++)
-    {
-        ImGuiViewportP* viewport = g.Viewports[n];
+    for (ImGuiViewportP* viewport : g.Viewports)
         if (!(viewport->Flags & (ImGuiViewportFlags_NoInputs | ImGuiViewportFlags_IsMinimized)) && viewport->GetMainRect().Contains(mouse_platform_pos))
             if (best_candidate == NULL || best_candidate->LastFocusedStampCount < viewport->LastFocusedStampCount)
                 best_candidate = viewport;
-    }
     return best_candidate;
 }
 
@@ -14157,9 +14214,8 @@ static void ImGui::UpdateViewportsNewFrame()
     if (viewports_enabled)
     {
         ImGuiViewportP* focused_viewport = NULL;
-        for (int n = 0; n < g.Viewports.Size; n++)
+        for (ImGuiViewportP* viewport : g.Viewports)
         {
-            ImGuiViewportP* viewport = g.Viewports[n];
             const bool platform_funcs_available = viewport->PlatformWindowCreated;
             if (g.PlatformIO.Platform_GetWindowMinimized && platform_funcs_available)
             {
@@ -14459,9 +14515,8 @@ static void ImGui::DestroyViewport(ImGuiViewportP* viewport)
 {
     // Clear references to this viewport in windows (window->ViewportId becomes the master data)
     ImGuiContext& g = *GImGui;
-    for (int window_n = 0; window_n < g.Windows.Size; window_n++)
+    for (ImGuiWindow* window : g.Windows)
     {
-        ImGuiWindow* window = g.Windows[window_n];
         if (window->Viewport != viewport)
             continue;
         window->Viewport = NULL;
@@ -14939,8 +14994,8 @@ void ImGui::DestroyPlatformWindows()
     // It is expected that the backend can handle calls to Renderer_DestroyWindow/Platform_DestroyWindow without
     // crashing if it doesn't have data stored.
     ImGuiContext& g = *GImGui;
-    for (int i = 0; i < g.Viewports.Size; i++)
-        DestroyPlatformWindow(g.Viewports[i]);
+    for (ImGuiViewportP* viewport : g.Viewports)
+        DestroyPlatformWindow(viewport);
 }
 
 
@@ -15251,13 +15306,12 @@ void ImGui::DockContextNewFrameUpdateUndocking(ImGuiContext* ctx)
     }
 
     // Process Undocking requests (we need to process them _before_ the UpdateMouseMovingWindowNewFrame call in NewFrame)
-    for (int n = 0; n < dc->Requests.Size; n++)
+    for (ImGuiDockRequest& req : dc->Requests)
     {
-        ImGuiDockRequest* req = &dc->Requests[n];
-        if (req->Type == ImGuiDockRequestType_Undock && req->UndockTargetWindow)
-            DockContextProcessUndockWindow(ctx, req->UndockTargetWindow);
-        else if (req->Type == ImGuiDockRequestType_Undock && req->UndockTargetNode)
-            DockContextProcessUndockNode(ctx, req->UndockTargetNode);
+        if (req.Type == ImGuiDockRequestType_Undock && req.UndockTargetWindow)
+            DockContextProcessUndockWindow(ctx, req.UndockTargetWindow);
+        else if (req.Type == ImGuiDockRequestType_Undock && req.UndockTargetNode)
+            DockContextProcessUndockNode(ctx, req.UndockTargetNode);
     }
 }
 
@@ -15282,9 +15336,9 @@ void ImGui::DockContextNewFrameUpdateDocking(ImGuiContext* ctx)
     }
 
     // Process Docking requests
-    for (int n = 0; n < dc->Requests.Size; n++)
-        if (dc->Requests[n].Type == ImGuiDockRequestType_Dock)
-            DockContextProcessDock(ctx, &dc->Requests[n]);
+    for (ImGuiDockRequest& req : dc->Requests)
+        if (req.Type == ImGuiDockRequestType_Dock)
+            DockContextProcessDock(ctx, &req);
     dc->Requests.resize(0);
 
     // Create windows for each automatic docking nodes
@@ -15488,9 +15542,8 @@ void ImGui::DockContextBuildAddWindowsToNodes(ImGuiContext* ctx, ImGuiID root_id
 {
     // Rebind all windows to nodes (they can also lazily rebind but we'll have a visible glitch during the first frame)
     ImGuiContext& g = *ctx;
-    for (int n = 0; n < g.Windows.Size; n++)
+    for (ImGuiWindow* window : g.Windows)
     {
-        ImGuiWindow* window = g.Windows[n];
         if (window->DockId == 0 || window->LastFrameActive < g.FrameCount - 1)
             continue;
         if (window->DockNode != NULL)
@@ -15549,9 +15602,9 @@ void ImGui::DockContextQueueUndockNode(ImGuiContext* ctx, ImGuiDockNode* node)
 void ImGui::DockContextQueueNotifyRemovedNode(ImGuiContext* ctx, ImGuiDockNode* node)
 {
     ImGuiDockContext* dc  = &ctx->DockContext;
-    for (int n = 0; n < dc->Requests.Size; n++)
-        if (dc->Requests[n].DockTargetNode == node)
-            dc->Requests[n].Type = ImGuiDockRequestType_None;
+    for (ImGuiDockRequest& req : dc->Requests)
+        if (req.DockTargetNode == node)
+            req.Type = ImGuiDockRequestType_None;
 }
 
 void ImGui::DockContextProcessDock(ImGuiContext* ctx, ImGuiDockRequest* req)
@@ -15759,9 +15812,8 @@ void ImGui::DockContextProcessUndockNode(ImGuiContext* ctx, ImGuiDockNode* node)
         node->ParentNode->AuthorityForViewport = ImGuiDataAuthority_Window; // The node that stays in place keeps the viewport, so our newly dragged out node will create a new viewport
         node->ParentNode = NULL;
     }
-    for (int n = 0; n < node->Windows.Size; n++)
+    for (ImGuiWindow* window : node->Windows)
     {
-        ImGuiWindow* window = node->Windows[n];
         window->Flags &= ~ImGuiWindowFlags_ChildWindow;
         if (window->ParentWindow)
             window->ParentWindow->DC.ChildWindows.find_erase(window);
@@ -16046,10 +16098,10 @@ static void ImGui::DockNodeMoveWindows(ImGuiDockNode* dst_node, ImGuiDockNode* s
 
 static void ImGui::DockNodeApplyPosSizeToWindows(ImGuiDockNode* node)
 {
-    for (int n = 0; n < node->Windows.Size; n++)
+    for (ImGuiWindow* window : node->Windows)
     {
-        SetWindowPos(node->Windows[n], node->Pos, ImGuiCond_Always); // We don't assign directly to Pos because it can break the calculation of SizeContents on next frame
-        SetWindowSize(node->Windows[n], node->Size, ImGuiCond_Always);
+        SetWindowPos(window, node->Pos, ImGuiCond_Always); // We don't assign directly to Pos because it can break the calculation of SizeContents on next frame
+        SetWindowSize(window, node->Size, ImGuiCond_Always);
     }
 }
 
@@ -16108,9 +16160,9 @@ static void DockNodeFindInfo(ImGuiDockNode* node, ImGuiDockNodeTreeInfo* info)
 static ImGuiWindow* ImGui::DockNodeFindWindowByID(ImGuiDockNode* node, ImGuiID id)
 {
     IM_ASSERT(id != 0);
-    for (int n = 0; n < node->Windows.Size; n++)
-        if (node->Windows[n]->ID == id)
-            return node->Windows[n];
+    for (ImGuiWindow* window : node->Windows)
+        if (window->ID == id)
+            return window;
     return NULL;
 }
 
@@ -16375,10 +16427,9 @@ static void ImGui::DockNodeUpdate(ImGuiDockNode* node)
     // Decide if the node will have a close button and a window menu button
     node->HasWindowMenuButton = (node->Windows.Size > 0) && (node_flags & ImGuiDockNodeFlags_NoWindowMenuButton) == 0;
     node->HasCloseButton = false;
-    for (int window_n = 0; window_n < node->Windows.Size; window_n++)
+    for (ImGuiWindow* window : node->Windows)
     {
         // FIXME-DOCK: Setting DockIsActive here means that for single active window in a leaf node, DockIsActive will be cleared until the next Begin() call.
-        ImGuiWindow* window = node->Windows[window_n];
         node->HasCloseButton |= window->HasCloseButton;
         window->DockIsActive = (node->Windows.Size > 1);
     }
